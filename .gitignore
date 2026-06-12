@@ -1,0 +1,43 @@
+# Dependencies
+node_modules/
+
+# Next.js
+.next/
+out/
+
+# Environment variables — NEVER commit these
+.env
+.env.local
+.env.*.local
+
+# Build output
+dist/
+build/
+
+# Uploads & local assets
+uploads/
+
+# Static site legacy files (replaced by Next.js app)
+index.html
+about.html
+marketplace.html
+moodboard.html
+contact.html
+app.js
+styles.css
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+
+# Prisma
+prisma/migrations/dev.db
+prisma/migrations/*.db
+
+# Logs
+*.log
+npm-debug.log*

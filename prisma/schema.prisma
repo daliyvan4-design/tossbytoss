@@ -1,0 +1,86 @@
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DATABASE_URL_UNPOOLED")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Product {
+  id         String      @id @default(cuid())
+  name       String
+  ref        String      @unique
+  category   String
+  price      Int
+  stock      Int         @default(0)
+  imageUrl   String?
+  imagePos   String?     @default("center")
+  active     Boolean     @default(true)
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+  orderItems OrderItem[]
+}
+
+model Order {
+  id            String          @id @default(cuid())
+  ref           String          @unique
+  status        OrderStatus     @default(PENDING)
+  total         Int
+  paymentRef    String?
+  customerName  String
+  customerEmail String
+  customerPhone String?
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  items         OrderItem[]
+  accounting    AccountingEntry?
+}
+
+enum OrderStatus {
+  PENDING
+  PAID
+  SHIPPED
+  DELIVERED
+  CANCELLED
+}
+
+model OrderItem {
+  id        String  @id @default(cuid())
+  qty       Int
+  unitPrice Int
+  order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  orderId   String
+  product   Product @relation(fields: [productId], references: [id])
+  productId String
+}
+
+model Subscriber {
+  id          String           @id @default(cuid())
+  email       String           @unique
+  source      SubscriberSource @default(NEWSLETTER)
+  active      Boolean          @default(true)
+  unsubToken  String           @unique @default(cuid())
+  createdAt   DateTime         @default(now())
+}
+
+enum SubscriberSource {
+  NEWSLETTER
+  CHECKOUT
+}
+
+model AccountingEntry {
+  id        String         @id @default(cuid())
+  amount    Int
+  type      AccountingType @default(SALE)
+  ref       String         @unique
+  createdAt DateTime       @default(now())
+  order     Order          @relation(fields: [orderId], references: [id])
+  orderId   String         @unique
+}
+
+enum AccountingType {
+  SALE
+  REFUND
+}
