@@ -1,41 +1,43 @@
 import crypto from "crypto";
 
-const BASE = process.env.GENIUSPAY_BASE_URL ?? "https://api.geniuspay.io/v1";
+const BASE = process.env.GENIUSPAY_BASE_URL ?? "http://pay.genius.ci/api/v1/merchant";
 
 interface InitiateParams {
   amount: number;
-  currency: "XOF";
   orderRef: string;
   customerEmail: string;
   customerName: string;
   customerPhone: string;
-  returnUrl: string;
-  webhookUrl: string;
+  successUrl: string;
+  errorUrl: string;
 }
 
 interface InitiateResponse {
-  paymentUrl: string;
+  checkoutUrl: string;
   paymentRef: string;
 }
 
 export async function initiatePayment(params: InitiateParams): Promise<InitiateResponse> {
-  const res = await fetch(`${BASE}/payments/initiate`, {
+  const res = await fetch(`${BASE}/payments`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${process.env.GENIUSPAY_SECRET_KEY}`,
+      "X-API-Key": process.env.GENIUSPAY_PUBLIC_KEY!,
+      "X-API-Secret": process.env.GENIUSPAY_SECRET_KEY!,
     },
     body: JSON.stringify({
       amount: params.amount,
-      currency: params.currency,
-      order_ref: params.orderRef,
+      description: `Commande Toss by Toss — ${params.orderRef}`,
       customer: {
-        email: params.customerEmail,
         name: params.customerName,
+        email: params.customerEmail,
         phone: params.customerPhone,
       },
-      return_url: params.returnUrl,
-      webhook_url: params.webhookUrl,
+      success_url: params.successUrl,
+      error_url: params.errorUrl,
+      metadata: {
+        order_id: params.orderRef,
+      },
     }),
   });
 
@@ -44,8 +46,13 @@ export async function initiatePayment(params: InitiateParams): Promise<InitiateR
     throw new Error(`GeniusPay initiate failed: ${res.status} ${body}`);
   }
 
-  const data = await res.json();
-  return { paymentUrl: data.payment_url, paymentRef: data.payment_ref };
+  const json = await res.json();
+  const data = json.data;
+
+  return {
+    checkoutUrl: data.checkout_url,
+    paymentRef: data.reference,
+  };
 }
 
 export function verifyWebhookSignature(rawBody: string, signatureHeader: string): boolean {

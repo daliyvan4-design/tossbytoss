@@ -12,19 +12,24 @@ export async function POST(req: NextRequest) {
   }
 
   const event = JSON.parse(rawBody);
-  const orderRef: string = event.order_ref;
+  const transaction = event.data?.transaction;
+  const orderRef: string = transaction?.metadata?.order_id ?? "";
 
   switch (event.event) {
 
     case "payment.initiated": {
-      await db.order.updateMany({
-        where: { ref: orderRef, status: "PENDING" },
-        data: { paymentRef: event.payment_ref ?? null },
-      }).catch(console.error);
+      if (orderRef && transaction?.reference) {
+        await db.order.updateMany({
+          where: { ref: orderRef, status: "PENDING" },
+          data: { paymentRef: transaction.reference },
+        }).catch(console.error);
+      }
       break;
     }
 
     case "payment.success": {
+      if (!orderRef) break;
+
       const order = await db.order.findUnique({
         where: { ref: orderRef },
         include: {
@@ -37,7 +42,7 @@ export async function POST(req: NextRequest) {
       await db.$transaction([
         db.order.update({
           where: { ref: orderRef },
-          data: { status: "PAID", paymentRef: event.payment_ref ?? order.paymentRef },
+          data: { status: "PAID", paymentRef: transaction?.reference ?? order.paymentRef },
         }),
         ...order.items.map((item) =>
           db.product.update({
@@ -79,14 +84,12 @@ export async function POST(req: NextRequest) {
     }
 
     case "payment.failed": {
-      await db.order.updateMany({
-        where: { ref: orderRef, status: "PENDING" },
-        data: { status: "CANCELLED" },
-      }).catch(console.error);
+      // On laisse PENDING — le client peut réessayer
       break;
     }
 
-    case "payment.canceled": {
+    case "payment.cancelled": {
+      if (!orderRef) break;
       await db.order.updateMany({
         where: { ref: orderRef, status: "PENDING" },
         data: { status: "CANCELLED" },

@@ -39,7 +39,7 @@ export async function POST(req: NextRequest) {
 
     const ref = generateOrderRef();
 
-    const order = await db.order.create({
+    await db.order.create({
       data: {
         ref,
         status: "PENDING",
@@ -53,20 +53,19 @@ export async function POST(req: NextRequest) {
 
     const siteUrl = process.env.NEXT_PUBLIC_SITE_URL!;
 
-    const { paymentUrl, paymentRef } = await initiatePayment({
+    const { checkoutUrl, paymentRef } = await initiatePayment({
       amount: total,
-      currency: "XOF",
       orderRef: ref,
       customerEmail,
       customerName,
       customerPhone,
-      returnUrl: `${siteUrl}/confirmation?ref=${ref}`,
-      webhookUrl: `${siteUrl}/api/webhook/genius-pay`,
+      successUrl: `${siteUrl}/confirmation?ref=${ref}`,
+      errorUrl: `${siteUrl}/checkout?error=1`,
     });
 
-    await db.order.update({ where: { id: order.id }, data: { paymentRef } });
+    await db.order.update({ where: { ref }, data: { paymentRef } });
 
-    return NextResponse.json({ paymentUrl });
+    return NextResponse.json({ paymentUrl: checkoutUrl });
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : "Erreur serveur.";
     console.error("[checkout]", err);
