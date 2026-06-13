@@ -58,7 +58,7 @@ html[data-mode="day"] .vignette { opacity: 0.4; background: radial-gradient(elli
 
 
 body, .nav, button, input { transition: color 800ms ease, background-color 800ms ease, border-color 800ms ease, box-shadow 800ms ease; }
-section, footer { position: relative; z-index: 2; }
+section, main, footer { position: relative; z-index: 2; }
 .toast { z-index: 100; }
 
 /* NAV */
