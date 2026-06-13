@@ -6,6 +6,7 @@ import { fmt, type Product } from "@/lib/products";
 interface CartContextValue {
   cart: Map<string, number>;
   cartLoaded: boolean;
+  productsLoaded: boolean;
   drawerOpen: boolean;
   totalCount: number;
   totalPrice: number;
@@ -26,13 +27,15 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const [cartLoaded, setCartLoaded] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [products, setProducts] = useState<Product[]>([]);
+  const [productsLoaded, setProductsLoaded] = useState(false);
 
   // Load products from DB
   useEffect(() => {
     fetch("/api/products")
       .then((r) => r.json())
       .then((data: Product[]) => setProducts(data))
-      .catch(() => {});
+      .catch(() => {})
+      .finally(() => setProductsLoaded(true));
   }, []);
 
   // Restore cart from Redis then localStorage
@@ -110,7 +113,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
   return (
     <CartContext.Provider value={{
-      cart, cartLoaded, drawerOpen, totalCount, totalPrice, products,
+      cart, cartLoaded, productsLoaded, drawerOpen, totalCount, totalPrice, products,
       addToCart, updateQty, removeFromCart, clearCart,
       openDrawer: () => setDrawerOpen(true),
       closeDrawer: () => setDrawerOpen(false),

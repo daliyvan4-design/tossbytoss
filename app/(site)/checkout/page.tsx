@@ -5,7 +5,7 @@ import { useState } from "react";
 import { fmt } from "@/lib/products";
 
 export default function CheckoutPage() {
-  const { cart, cartLoaded, products, clearCart } = useCart();
+  const { cart, cartLoaded, productsLoaded, products, clearCart } = useCart();
   const [form, setForm] = useState({ name: "", email: "", phone: "" });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -46,7 +46,7 @@ export default function CheckoutPage() {
     }
   }
 
-  if (!cartLoaded) {
+  if (!cartLoaded || !productsLoaded) {
     return (
       <main style={{ padding: "120px 48px", background: "#0a0a0a", minHeight: "100vh" }} />
     );
