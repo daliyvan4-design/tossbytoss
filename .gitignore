@@ -38,6 +38,9 @@ Thumbs.db
 prisma/migrations/dev.db
 prisma/migrations/*.db
 
+# TypeScript
+tsconfig.tsbuildinfo
+
 # Logs
 *.log
 npm-debug.log*

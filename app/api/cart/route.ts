@@ -11,7 +11,7 @@ export async function GET(req: NextRequest) {
   const sid = getSessionId(req);
   if (!sid) return NextResponse.json({ cart: [] });
 
-  const cart = await redis.get<[number, number][]>(`cart:${sid}`).catch(() => null);
+  const cart = await redis.get<[string, number][]>(`cart:${sid}`).catch(() => null);
   return NextResponse.json({ cart: cart ?? [] });
 }
 

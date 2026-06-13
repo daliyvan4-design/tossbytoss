@@ -9,7 +9,7 @@ export async function GET() {
 
 export async function POST(req: NextRequest) {
   const data = await req.json();
-  const { name, ref, category, price, stock, imageUrl, imagePos } = data;
+  const { name, ref, slug, category, price, stock, imageUrl, imagePos, texKey, description, details, colors, sizes, active } = data;
 
   if (!name || !ref || !price) {
     return NextResponse.json({ error: "Champs obligatoires manquants." }, { status: 400 });
@@ -19,11 +19,18 @@ export async function POST(req: NextRequest) {
     data: {
       name,
       ref,
+      slug: slug || ref,
       category: category ?? "",
       price: Number(price),
       stock: Number(stock ?? 0),
       imageUrl: imageUrl ?? "",
       imagePos: imagePos ?? "center",
+      texKey: texKey ?? "leather-black",
+      description: description ?? "",
+      details: details ?? [],
+      colors: colors ?? [],
+      sizes: sizes ?? [],
+      active: active ?? true,
     },
   });
 

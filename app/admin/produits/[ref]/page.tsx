@@ -17,7 +17,25 @@ export default async function EditProduitPage({ params }: { params: Promise<{ re
           {product.name}
         </h1>
       </div>
-      <ProductForm initial={{ ...product, imageUrl: product.imageUrl ?? "", imagePos: product.imagePos ?? "center" }} isEdit />
+      <ProductForm
+        initial={{
+          name: product.name,
+          ref: product.ref,
+          slug: product.slug,
+          category: product.category,
+          price: product.price,
+          stock: product.stock,
+          imageUrl: product.imageUrl ?? "",
+          imagePos: product.imagePos ?? "center",
+          texKey: product.texKey,
+          description: product.description,
+          details: ((product.details as unknown as string[]) ?? []).join("\n"),
+          colors: JSON.stringify(product.colors ?? [], null, 2),
+          sizes: ((product.sizes as unknown as string[]) ?? []).join(", "),
+          active: product.active,
+        }}
+        isEdit
+      />
     </>
   );
 }

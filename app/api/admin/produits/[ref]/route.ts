@@ -16,11 +16,17 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ ref:
     where: { ref },
     data: {
       name: data.name,
+      slug: data.slug,
       category: data.category,
       price: Number(data.price),
       stock: Number(data.stock),
       imageUrl: data.imageUrl,
       imagePos: data.imagePos,
+      texKey: data.texKey ?? "leather-black",
+      description: data.description ?? "",
+      details: data.details ?? [],
+      colors: data.colors ?? [],
+      sizes: data.sizes ?? [],
       active: data.active,
     },
   });

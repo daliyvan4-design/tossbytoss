@@ -9,18 +9,24 @@ generator client {
 }
 
 model Product {
-  id         String      @id @default(cuid())
-  name       String
-  ref        String      @unique
-  category   String
-  price      Int
-  stock      Int         @default(0)
-  imageUrl   String?
-  imagePos   String?     @default("center")
-  active     Boolean     @default(true)
-  createdAt  DateTime    @default(now())
-  updatedAt  DateTime    @updatedAt
-  orderItems OrderItem[]
+  id          String      @id @default(cuid())
+  name        String
+  ref         String      @unique
+  slug        String      @unique @default(cuid())
+  category    String
+  price       Int
+  stock       Int         @default(0)
+  imageUrl    String      @default("")
+  imagePos    String      @default("center")
+  texKey      String      @default("leather-black")
+  description String      @default("")
+  details     Json        @default("[]")
+  colors      Json        @default("[]")
+  sizes       Json        @default("[]")
+  active      Boolean     @default(true)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  orderItems  OrderItem[]
 }
 
 model Order {

@@ -14,8 +14,8 @@ export default function CheckoutPage() {
 
   const cartItems = Array.from(cart.entries())
     .filter(([, qty]) => qty > 0)
-    .map(([productId, qty]) => {
-      const product = products.find((p) => p.id === productId);
+    .map(([ref, qty]) => {
+      const product = products.find((p) => p.ref === ref);
       if (!product) return null;
       return { ref: product.ref, qty, name: product.name, price: product.price };
     })

@@ -1,21 +1,34 @@
 import { NextResponse } from "next/server";
-import { isDbConfigured, mockProducts } from "@/lib/mock-data";
 import { getCachedProducts, setCachedProducts } from "@/lib/cache";
+import type { Product, ProductColor } from "@/lib/products";
 
 export async function GET() {
-  if (!isDbConfigured()) {
-    return NextResponse.json(
-      mockProducts.map((p) => ({ ref: p.ref, price: p.price, stock: p.stock, active: p.active }))
-    );
-  }
-
   const cached = await getCachedProducts().catch(() => null);
   if (cached) return NextResponse.json(cached);
 
   const { db } = await import("@/lib/db");
-  const products = await db.product.findMany({
-    select: { ref: true, price: true, stock: true, active: true },
+  const rows = await db.product.findMany({
+    where: { active: true },
+    orderBy: { createdAt: "asc" },
   });
+
+  const products: Product[] = rows.map((p) => ({
+    id: p.id,
+    name: p.name,
+    slug: p.slug,
+    ref: p.ref,
+    category: p.category,
+    price: p.price,
+    stock: p.stock,
+    active: p.active,
+    imageUrl: p.imageUrl,
+    imagePos: p.imagePos,
+    texKey: p.texKey,
+    description: p.description,
+    details: (p.details as unknown as string[]) ?? [],
+    colors: (p.colors as unknown as ProductColor[]) ?? [],
+    sizes: (p.sizes as unknown as string[]) ?? [],
+  }));
 
   await setCachedProducts(products).catch(() => null);
   return NextResponse.json(products);

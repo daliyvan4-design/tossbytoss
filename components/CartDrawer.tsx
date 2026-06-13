@@ -14,7 +14,10 @@ export function CartDrawer() {
     return () => document.removeEventListener("keydown", onKey);
   }, [closeDrawer]);
 
-  const items = [...cart.entries()].filter(([i]) => products[i]);
+  const items = [...cart.entries()]
+    .map(([ref, qty]) => ({ ref, qty, product: products.find((p) => p.ref === ref) }))
+    .filter((x) => x.product !== undefined) as { ref: string; qty: number; product: NonNullable<ReturnType<typeof products.find>> }[];
+
   const hasItems = items.length > 0;
 
   return (
@@ -29,27 +32,29 @@ export function CartDrawer() {
           {!hasItems && (
             <div className="drawer-empty">— Votre panier est vide —</div>
           )}
-          {items.map(([i, q]) => {
-            const p = products[i];
-            return (
-              <div className="drawer-item" key={i}>
-                <div className="thumb" style={{ backgroundImage: `url('/assets/${p.tex}.png')`, backgroundPosition: p.pos }} />
-                <div className="info">
-                  <div className="name">{p.name}</div>
-                  <div className="ref">{p.ref} · {p.cat}</div>
-                  <div className="qty">
-                    <button onClick={() => updateQty(i, -1)} aria-label="Réduire">−</button>
-                    <span className="n">{q}</span>
-                    <button onClick={() => updateQty(i, 1)} aria-label="Augmenter">+</button>
-                  </div>
-                </div>
-                <div>
-                  <div className="price">{fmt(p.price * q)}</div>
-                  <button className="remove" onClick={() => removeFromCart(i)}>Retirer</button>
+          {items.map(({ ref, qty, product: p }) => (
+            <div className="drawer-item" key={ref}>
+              <div className="thumb" style={{
+                backgroundImage: p.imageUrl
+                  ? `url('${p.imageUrl}')`
+                  : `url('/assets/${p.texKey}.png')`,
+                backgroundPosition: p.imagePos,
+              }} />
+              <div className="info">
+                <div className="name">{p.name}</div>
+                <div className="ref">{p.ref} · {p.category}</div>
+                <div className="qty">
+                  <button onClick={() => updateQty(ref, -1)} aria-label="Réduire">−</button>
+                  <span className="n">{qty}</span>
+                  <button onClick={() => updateQty(ref, 1)} aria-label="Augmenter">+</button>
                 </div>
               </div>
-            );
-          })}
+              <div>
+                <div className="price">{fmt(p.price * qty)}</div>
+                <button className="remove" onClick={() => removeFromCart(ref)}>Retirer</button>
+              </div>
+            </div>
+          ))}
         </div>
         {hasItems && (
           <div className="drawer-foot">

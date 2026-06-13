@@ -1,44 +1,47 @@
 "use client";
 
-import { PRODUCTS, fmt } from "@/lib/products";
 import { useCart } from "@/contexts/CartContext";
+import { fmt } from "@/lib/products";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { useState, use } from "react";
 
 export default function ProductPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = use(params);
-  const { addToCart, openDrawer, products: liveProducts } = useCart();
+  const { addToCart, openDrawer, products } = useCart();
   const [added, setAdded] = useState(false);
-  const [activeImg, setActiveImg] = useState(0);
   const [activeColor, setActiveColor] = useState(0);
   const [activeSize, setActiveSize] = useState<string | null>(null);
 
-  const found = PRODUCTS.find((p) => p.slug === slug);
-  if (!found) return notFound();
-  const product = found;
+  const product = products.find((p) => p.slug === slug);
 
-  const liveProduct = liveProducts.find((p) => p.ref === product.ref);
-  const livePrice = liveProduct?.price ?? product.price;
-  const stock = liveProduct?.stock ?? 99;
-  const outOfStock = stock === 0;
+  if (products.length > 0 && !product) return notFound();
+  if (!product) {
+    return (
+      <main style={{ padding: "160px 48px", textAlign: "center", opacity: 0.4, fontFamily: "var(--font-cormorant, Georgia, serif)", fontStyle: "italic", fontSize: 24 }}>
+        Chargement…
+      </main>
+    );
+  }
 
-  const currentTex = product.colors[activeColor].tex;
+  const outOfStock = product.stock === 0;
+  const hasColors = product.colors.length > 0;
+  const hasSizes = product.sizes.length > 0;
+  const currentTex = hasColors ? product.colors[activeColor].tex : product.texKey;
+  const bgImage = product.imageUrl
+    ? `url('${product.imageUrl}')`
+    : `url('/assets/${currentTex}.png')`;
 
   function handleAdd() {
-    addToCart(product.id);
+    addToCart(product!.ref);
     setAdded(true);
     setTimeout(() => setAdded(false), 2000);
   }
 
   function handleCommander() {
-    addToCart(product.id);
+    addToCart(product!.ref);
     openDrawer();
   }
-
-  /* couleur d'overlay selon le mode — assure lisibilité sur texture cuir */
-  const panel = "rgba(10,10,10,0.55)";
-  const panelLight = "rgba(245,242,236,0.72)";
 
   return (
     <main style={{ paddingTop: 100, minHeight: "100vh" }}>
@@ -86,15 +89,11 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
 
       <div className="pdp-wrap">
 
-        {/* ── Colonne gauche : galerie ── */}
+        {/* Galerie */}
         <div className="pdp-gallery">
-
-          {/* Image principale */}
           <div style={{
             position: "relative",
-            background: activeImg === 0
-              ? `url('/assets/${currentTex}.png') center / cover no-repeat`
-              : `url('${product.images[activeImg]}') center / cover no-repeat`,
+            background: `${bgImage} ${product.imagePos} / cover no-repeat`,
             aspectRatio: "4/5",
             overflow: "hidden",
           }}>
@@ -109,7 +108,7 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
                 background: "#f5f2ec",
                 color: "#0a0a0a",
               }}>
-                {product.cat}
+                {product.category}
               </span>
             </div>
             <div style={{ position: "absolute", bottom: 20, right: 20 }}>
@@ -125,32 +124,9 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
               </span>
             </div>
           </div>
-
-          {/* Miniatures */}
-          <div style={{ display: "flex", gap: 10 }}>
-            {product.images.map((img, i) => (
-              <button
-                key={i}
-                onClick={() => setActiveImg(i)}
-                style={{
-                  flex: 1,
-                  aspectRatio: "1",
-                  background: i === 0
-                    ? `url('/assets/${currentTex}.png') center / cover no-repeat`
-                    : `url('${img}') center / cover no-repeat`,
-                  border: activeImg === i ? "2px solid var(--fg)" : "2px solid transparent",
-                  cursor: "pointer",
-                  padding: 0,
-                  outline: "none",
-                  opacity: activeImg === i ? 1 : 0.55,
-                  transition: "opacity 0.2s, border-color 0.2s",
-                }}
-              />
-            ))}
-          </div>
         </div>
 
-        {/* ── Colonne droite : infos ── */}
+        {/* Infos */}
         <div className="pdp-info">
 
           <div style={{
@@ -162,64 +138,64 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
             opacity: 0.55,
             marginBottom: 14,
           }}>
-            {product.cat} · {product.ref}
+            {product.category} · {product.ref}
           </div>
 
-          <h1 className="pdp-title">
-            {product.name}
-          </h1>
+          <h1 className="pdp-title">{product.name}</h1>
 
-          <p style={{
-            fontFamily: "var(--font-cormorant, Georgia, serif)",
-            fontSize: 21,
-            fontWeight: 500,
-            lineHeight: 1.7,
-            marginBottom: 36,
-          }}>
-            {product.description}
-          </p>
-
-          {/* ── Couleurs ── */}
-          <div style={{ marginBottom: 32 }}>
-            <div style={{
-              fontFamily: "var(--font-jetbrains, monospace)",
-              fontSize: 10,
-              fontWeight: 700,
-              letterSpacing: "0.28em",
-              textTransform: "uppercase",
-              opacity: 0.55,
-              marginBottom: 14,
+          {product.description && (
+            <p style={{
+              fontFamily: "var(--font-cormorant, Georgia, serif)",
+              fontSize: 21,
+              fontWeight: 500,
+              lineHeight: 1.7,
+              marginBottom: 36,
             }}>
-              Coloris — <span style={{ fontStyle: "italic", textTransform: "none", letterSpacing: 0, fontFamily: "var(--font-cormorant, Georgia, serif)", fontSize: 16, fontWeight: 500, opacity: 1 }}>{product.colors[activeColor].label}</span>
-            </div>
-            <div style={{ display: "flex", gap: 10 }}>
-              {product.colors.map((c, i) => (
-                <button
-                  key={c.name}
-                  onClick={() => { setActiveColor(i); setActiveImg(0); }}
-                  title={c.label}
-                  style={{
-                    width: 36,
-                    height: 36,
-                    borderRadius: "50%",
-                    background: c.hex,
-                    border: activeColor === i
-                      ? "3px solid var(--fg)"
-                      : "2px solid var(--hairline)",
-                    cursor: "pointer",
-                    padding: 0,
-                    outline: activeColor === i ? "2px solid var(--bg)" : "none",
-                    outlineOffset: "-4px",
-                    transition: "border-color 0.15s, outline 0.15s",
-                    boxShadow: "0 1px 4px rgba(0,0,0,0.18)",
-                  }}
-                />
-              ))}
-            </div>
-          </div>
+              {product.description}
+            </p>
+          )}
 
-          {/* ── Pointures (souliers uniquement) ── */}
-          {product.sizes && (
+          {/* Couleurs */}
+          {hasColors && (
+            <div style={{ marginBottom: 32 }}>
+              <div style={{
+                fontFamily: "var(--font-jetbrains, monospace)",
+                fontSize: 10,
+                fontWeight: 700,
+                letterSpacing: "0.28em",
+                textTransform: "uppercase",
+                opacity: 0.55,
+                marginBottom: 14,
+              }}>
+                Coloris — <span style={{ fontStyle: "italic", textTransform: "none", letterSpacing: 0, fontFamily: "var(--font-cormorant, Georgia, serif)", fontSize: 16, fontWeight: 500, opacity: 1 }}>{product.colors[activeColor].label}</span>
+              </div>
+              <div style={{ display: "flex", gap: 10 }}>
+                {product.colors.map((c, i) => (
+                  <button
+                    key={c.name}
+                    onClick={() => setActiveColor(i)}
+                    title={c.label}
+                    style={{
+                      width: 36,
+                      height: 36,
+                      borderRadius: "50%",
+                      background: c.hex,
+                      border: activeColor === i ? "3px solid var(--fg)" : "2px solid var(--hairline)",
+                      cursor: "pointer",
+                      padding: 0,
+                      outline: activeColor === i ? "2px solid var(--bg)" : "none",
+                      outlineOffset: "-4px",
+                      transition: "border-color 0.15s, outline 0.15s",
+                      boxShadow: "0 1px 4px rgba(0,0,0,0.18)",
+                    }}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Pointures */}
+          {hasSizes && (
             <div style={{ marginBottom: 32 }}>
               <div style={{
                 fontFamily: "var(--font-jetbrains, monospace)",
@@ -262,34 +238,34 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
             </div>
           )}
 
-          {/* ── Détails ── */}
-          <div style={{ marginBottom: 36 }}>
-            <div style={{
-              fontFamily: "var(--font-jetbrains, monospace)",
-              fontSize: 10,
-              fontWeight: 700,
-              letterSpacing: "0.28em",
-              textTransform: "uppercase",
-              opacity: 0.55,
-              marginBottom: 14,
-            }}>
-              Composition & détails
+          {/* Détails */}
+          {product.details.length > 0 && (
+            <div style={{ marginBottom: 36 }}>
+              <div style={{
+                fontFamily: "var(--font-jetbrains, monospace)",
+                fontSize: 10,
+                fontWeight: 700,
+                letterSpacing: "0.28em",
+                textTransform: "uppercase",
+                opacity: 0.55,
+                marginBottom: 14,
+              }}>
+                Composition & détails
+              </div>
+              <ul style={{ listStyle: "none", display: "flex", flexDirection: "column", gap: 10 }}>
+                {product.details.map((d) => (
+                  <li key={d} style={{ display: "flex", alignItems: "baseline", gap: 12 }}>
+                    <span style={{ fontFamily: "var(--font-jetbrains, monospace)", fontSize: 10, opacity: 0.4, flexShrink: 0 }}>—</span>
+                    <span style={{ fontFamily: "var(--font-cormorant, Georgia, serif)", fontSize: 18, fontWeight: 500, lineHeight: 1.4 }}>{d}</span>
+                  </li>
+                ))}
+              </ul>
             </div>
-            <ul style={{ listStyle: "none", display: "flex", flexDirection: "column", gap: 10 }}>
-              {product.details.map((d) => (
-                <li key={d} style={{ display: "flex", alignItems: "baseline", gap: 12 }}>
-                  <span style={{ fontFamily: "var(--font-jetbrains, monospace)", fontSize: 10, opacity: 0.4, flexShrink: 0 }}>—</span>
-                  <span style={{ fontFamily: "var(--font-cormorant, Georgia, serif)", fontSize: 18, fontWeight: 500, lineHeight: 1.4 }}>{d}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
+          )}
 
-          {/* ── Prix + CTA ── */}
+          {/* Prix + CTA */}
           <div style={{ borderTop: "1px solid var(--hairline)", paddingTop: 32, display: "flex", flexDirection: "column", gap: 18 }}>
-            <div className="pdp-price">
-              {fmt(livePrice)}
-            </div>
+            <div className="pdp-price">{fmt(product.price)}</div>
 
             {outOfStock && (
               <div style={{ fontFamily: "var(--font-jetbrains, monospace)", fontSize: 10, letterSpacing: "0.22em", textTransform: "uppercase", color: "rgba(245,100,100,0.85)" }}>
@@ -356,7 +332,7 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
         </div>
       </div>
 
-      {/* ── Autres pièces ── */}
+      {/* Autres pièces */}
       <div className="pdp-related">
         <div style={{
           fontFamily: "var(--font-jetbrains, monospace)",
@@ -370,11 +346,13 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
           Autres pièces
         </div>
         <div style={{ display: "flex", gap: 24, overflowX: "auto", paddingBottom: 8 }}>
-          {PRODUCTS.filter((p) => p.id !== product.id).slice(0, 4).map((p) => (
+          {products.filter((p) => p.ref !== product.ref).slice(0, 4).map((p) => (
             <Link key={p.slug} href={`/marketplace/${p.slug}`} style={{ textDecoration: "none", flexShrink: 0, width: 240 }}>
               <div style={{
                 height: 300,
-                background: `url('/assets/${p.tex}.png') ${p.pos} / cover no-repeat`,
+                background: p.imageUrl
+                  ? `url('${p.imageUrl}') ${p.imagePos} / cover no-repeat`
+                  : `url('/assets/${p.texKey}.png') ${p.imagePos} / cover no-repeat`,
                 marginBottom: 16,
               }} />
               <div style={{
@@ -398,7 +376,6 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
           ))}
         </div>
       </div>
-
     </main>
   );
 }
