@@ -5,7 +5,7 @@ import { useState } from "react";
 import { fmt } from "@/lib/products";
 
 export default function CheckoutPage() {
-  const { cart, cartLoaded, productsLoaded, products, clearCart } = useCart();
+  const { cart, cartLoaded, productsLoaded, products } = useCart();
   const [form, setForm] = useState({ name: "", email: "", phone: "" });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -38,7 +38,6 @@ export default function CheckoutPage() {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? "Erreur serveur.");
-      clearCart();
       window.location.href = data.paymentUrl;
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Erreur serveur.");
@@ -49,6 +48,21 @@ export default function CheckoutPage() {
   if (!cartLoaded || !productsLoaded) {
     return (
       <main style={{ padding: "120px 48px", background: "#0a0a0a", minHeight: "100vh" }} />
+    );
+  }
+
+  if (loading) {
+    return (
+      <main style={{ minHeight: "100vh", background: "#0a0a0a", display: "grid", placeItems: "center", position: "relative", zIndex: 2 }}>
+        <div style={{ textAlign: "center" }}>
+          <div style={{ fontFamily: "var(--font-cormorant, Georgia, serif)", fontStyle: "italic", fontSize: 28, color: "#f5f2ec", marginBottom: 16 }}>
+            Redirection en cours…
+          </div>
+          <div style={{ fontFamily: "var(--font-jetbrains, monospace)", fontSize: 9, letterSpacing: "0.25em", textTransform: "uppercase", color: "rgba(245,242,236,0.35)" }}>
+            Vous allez être redirigé vers Genius Pay
+          </div>
+        </div>
+      </main>
     );
   }
 
