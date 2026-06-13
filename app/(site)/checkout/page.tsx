@@ -5,7 +5,7 @@ import { useState } from "react";
 import { fmt } from "@/lib/products";
 
 export default function CheckoutPage() {
-  const { cart, products, clearCart } = useCart();
+  const { cart, cartLoaded, products, clearCart } = useCart();
   const [form, setForm] = useState({ name: "", email: "", phone: "" });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -46,9 +46,15 @@ export default function CheckoutPage() {
     }
   }
 
+  if (!cartLoaded) {
+    return (
+      <main style={{ padding: "120px 48px", background: "#0a0a0a", minHeight: "100vh" }} />
+    );
+  }
+
   if (cartItems.length === 0) {
     return (
-      <main style={{ padding: "120px 48px", fontFamily: "var(--font-cormorant, Georgia, serif)", fontStyle: "italic", fontSize: 24, opacity: 0.5, textAlign: "center" }}>
+      <main style={{ padding: "120px 48px", background: "#0a0a0a", minHeight: "100vh", fontFamily: "var(--font-cormorant, Georgia, serif)", fontStyle: "italic", fontSize: 24, color: "rgba(245,242,236,0.45)", textAlign: "center" }}>
         Votre panier est vide.
       </main>
     );

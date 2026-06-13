@@ -5,6 +5,7 @@ import { fmt, type Product } from "@/lib/products";
 
 interface CartContextValue {
   cart: Map<string, number>;
+  cartLoaded: boolean;
   drawerOpen: boolean;
   totalCount: number;
   totalPrice: number;
@@ -22,6 +23,7 @@ const CartContext = createContext<CartContextValue | null>(null);
 
 export function CartProvider({ children }: { children: React.ReactNode }) {
   const [cart, setCart] = useState<Map<string, number>>(new Map());
+  const [cartLoaded, setCartLoaded] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [products, setProducts] = useState<Product[]>([]);
 
@@ -52,7 +54,8 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
           const saved = localStorage.getItem("tbt-cart");
           if (saved) setCart(new Map(JSON.parse(saved)));
         } catch {}
-      });
+      })
+      .finally(() => setCartLoaded(true));
   }, []);
 
   const persist = useCallback((c: Map<string, number>) => {
@@ -107,7 +110,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
   return (
     <CartContext.Provider value={{
-      cart, drawerOpen, totalCount, totalPrice, products,
+      cart, cartLoaded, drawerOpen, totalCount, totalPrice, products,
       addToCart, updateQty, removeFromCart, clearCart,
       openDrawer: () => setDrawerOpen(true),
       closeDrawer: () => setDrawerOpen(false),
