@@ -23,102 +23,264 @@ export default function MarketplacePage() {
   const visible = filter === "Tout" ? products : products.filter((p) => p.category === filter);
 
   return (
-    <section id="marketplace" style={{ paddingTop: 140, paddingBottom: 120 }}>
+    <>
       <style>{`
-        .mp-header { max-width: 1440px; margin: 0 auto; padding: 0 60px 72px; display: flex; align-items: flex-end; justify-content: space-between; gap: 40px; border-bottom: 1px solid var(--hairline); }
-        .mp-title { font-family: var(--serif); font-weight: 300; font-size: clamp(48px, 7vw, 96px); line-height: 0.92; letter-spacing: -0.02em; }
-        .mp-title em { font-style: italic; }
-        .mp-filters { display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; padding-bottom: 6px; }
-        .mp-filter { font-family: var(--mono); font-size: 9px; letter-spacing: 0.28em; text-transform: uppercase; padding: 8px 16px; border: 1px solid var(--hairline); background: transparent; color: var(--fg); cursor: pointer; transition: all 250ms ease; }
-        .mp-filter:hover { border-color: var(--fg); }
-        .mp-filter.active { background: var(--fg); color: var(--bg); border-color: var(--fg); }
-        .mp-count { font-family: var(--mono); font-size: 10px; letter-spacing: 0.2em; opacity: 0.4; margin-top: 20px; }
+        .cine-wrap { position: relative; }
 
-        .mp-list { max-width: 1440px; margin: 0 auto; padding: 0 60px; }
-        .mp-item { display: grid; grid-template-columns: 58fr 42fr; min-height: 88vh; border-bottom: 1px solid var(--hairline); overflow: hidden; }
-        .mp-item.reverse { grid-template-columns: 42fr 58fr; }
-        .mp-item.reverse .mp-img { order: 2; }
-        .mp-item.reverse .mp-info { order: 1; }
+        /* ── Barre filtre fixe ── */
+        .cine-bar {
+          position: fixed; top: 80px; left: 50%; transform: translateX(-50%);
+          z-index: 40; display: flex; gap: 4px; align-items: center;
+          background: var(--bg); border: 1px solid var(--hairline);
+          padding: 6px 10px; transition: background 800ms, border-color 800ms;
+        }
+        .cine-bar-label { font-family: var(--mono); font-size: 8px; letter-spacing: 0.3em; text-transform: uppercase; opacity: 0.4; margin-right: 8px; }
+        .cine-f { font-family: var(--mono); font-size: 8px; letter-spacing: 0.22em; text-transform: uppercase; padding: 6px 14px; border: none; background: transparent; color: var(--fg); cursor: pointer; transition: background 200ms, color 200ms; }
+        .cine-f:hover { background: var(--hairline); }
+        .cine-f.active { background: var(--fg); color: var(--bg); }
 
-        .mp-img { position: relative; overflow: hidden; }
-        .mp-img-inner { width: 100%; height: 100%; min-height: 600px; background-size: cover; background-position: center; transition: transform 800ms cubic-bezier(.2,.8,.2,1); }
-        .mp-item:hover .mp-img-inner { transform: scale(1.035); }
-        .mp-img-tag { position: absolute; top: 32px; left: 32px; font-family: var(--mono); font-size: 9px; letter-spacing: 0.3em; text-transform: uppercase; padding: 6px 12px; background: var(--panel); color: var(--panel-fg); }
-        .mp-img-num { position: absolute; bottom: 32px; right: 32px; font-family: var(--serif); font-style: italic; font-size: 13px; letter-spacing: 0.1em; color: var(--panel-fg); opacity: 0.7; }
+        /* ── Section produit ── */
+        .cine-section {
+          position: relative; min-height: 100vh;
+          display: grid; grid-template-columns: 46fr 54fr;
+          overflow: hidden; border-bottom: 1px solid var(--hairline);
+        }
 
-        .mp-info { padding: 64px 56px; display: flex; flex-direction: column; justify-content: center; gap: 0; }
-        .mp-item.reverse .mp-info { padding: 64px 64px 64px 48px; }
+        /* ── Numéro géant en fond ── */
+        .cine-num {
+          position: absolute; right: -0.05em; top: 50%;
+          transform: translateY(-50%);
+          font-family: var(--serif); font-style: italic;
+          font-size: clamp(240px, 38vw, 520px);
+          line-height: 1; color: var(--fg);
+          opacity: 0.04; pointer-events: none; user-select: none;
+          z-index: 0; letter-spacing: -0.04em;
+        }
 
-        .mp-ref { font-family: var(--mono); font-size: 9px; letter-spacing: 0.32em; text-transform: uppercase; opacity: 0.45; margin-bottom: 20px; }
-        .mp-name { font-family: var(--serif); font-style: italic; font-weight: 400; font-size: clamp(36px, 4vw, 58px); line-height: 1.0; letter-spacing: -0.01em; margin-bottom: 24px; }
-        .mp-desc { font-family: var(--serif); font-size: 18px; font-weight: 400; line-height: 1.7; opacity: 0.75; margin-bottom: 40px; max-width: 38ch; }
+        /* ── Panneau gauche infos ── */
+        .cine-info {
+          position: relative; z-index: 2;
+          padding: 120px 56px 80px 72px;
+          display: flex; flex-direction: column; justify-content: center;
+        }
 
-        .mp-colors { display: flex; gap: 8px; margin-bottom: 40px; }
-        .mp-color { width: 20px; height: 20px; border-radius: 50%; border: 2px solid transparent; outline: 2px solid transparent; outline-offset: 2px; transition: outline 200ms; }
-        .mp-color:hover { outline-color: var(--fg); }
+        .cine-meta {
+          display: flex; align-items: center; gap: 16px; margin-bottom: 32px;
+        }
+        .cine-cat {
+          font-family: var(--mono); font-size: 8px; letter-spacing: 0.38em;
+          text-transform: uppercase; padding: 5px 12px;
+          border: 1px solid var(--hairline); opacity: 0.65;
+        }
+        .cine-ref {
+          font-family: var(--mono); font-size: 8px; letter-spacing: 0.3em;
+          text-transform: uppercase; opacity: 0.35;
+        }
 
-        .mp-price { font-family: var(--serif); font-style: italic; font-size: clamp(28px, 3vw, 42px); letter-spacing: -0.01em; margin-bottom: 36px; }
+        .cine-name {
+          font-family: var(--serif); font-style: italic; font-weight: 300;
+          font-size: clamp(52px, 6.5vw, 96px); line-height: 0.95;
+          letter-spacing: -0.02em; margin-bottom: 36px;
+        }
 
-        .mp-actions { display: flex; gap: 12px; align-items: center; }
-        .mp-btn-primary { padding: 15px 32px; background: var(--fg); color: var(--bg); font-family: var(--mono); font-size: 9px; font-weight: 700; letter-spacing: 0.28em; text-transform: uppercase; border: none; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 10px; transition: opacity 250ms; }
-        .mp-btn-primary:hover { opacity: 0.82; }
-        .mp-btn-primary.added { opacity: 0.45; }
-        .mp-btn-ghost { padding: 15px 24px; background: transparent; color: var(--fg); font-family: var(--mono); font-size: 9px; letter-spacing: 0.22em; text-transform: uppercase; border: 1px solid var(--hairline); cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; transition: border-color 250ms; }
-        .mp-btn-ghost:hover { border-color: var(--fg); }
+        .cine-desc {
+          font-family: var(--serif); font-size: 19px; font-weight: 400;
+          line-height: 1.72; opacity: 0.68; max-width: 34ch; margin-bottom: 40px;
+        }
 
-        .mp-rupture { font-family: var(--mono); font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(200,80,60,0.8); margin-bottom: 16px; }
+        .cine-colors { display: flex; gap: 10px; margin-bottom: 40px; }
+        .cine-swatch {
+          width: 22px; height: 22px; border-radius: 50%;
+          border: 2px solid transparent; outline: 2px solid transparent;
+          outline-offset: 3px; cursor: default;
+          transition: outline-color 200ms;
+        }
+        .cine-swatch:hover { outline-color: var(--fg); }
+
+        .cine-divider { width: 32px; height: 1px; background: var(--fg); opacity: 0.3; margin-bottom: 36px; }
+
+        .cine-price {
+          font-family: var(--serif); font-style: italic;
+          font-size: clamp(32px, 3.5vw, 52px); letter-spacing: -0.01em;
+          margin-bottom: 44px;
+        }
+
+        .cine-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+        .cine-add {
+          padding: 16px 36px; background: var(--fg); color: var(--bg);
+          font-family: var(--mono); font-size: 9px; font-weight: 700;
+          letter-spacing: 0.28em; text-transform: uppercase;
+          border: none; cursor: pointer;
+          transition: opacity 250ms ease;
+        }
+        .cine-add:hover { opacity: 0.8; }
+        .cine-add:disabled { opacity: 0.3; cursor: default; }
+        .cine-add.added { opacity: 0.4; }
+        .cine-see {
+          padding: 16px 28px; background: transparent; color: var(--fg);
+          font-family: var(--mono); font-size: 9px; letter-spacing: 0.22em;
+          text-transform: uppercase; border: 1px solid var(--hairline);
+          text-decoration: none; display: inline-flex; align-items: center;
+          transition: border-color 250ms;
+        }
+        .cine-see:hover { border-color: var(--fg); }
+
+        .cine-rupture {
+          font-family: var(--mono); font-size: 9px; letter-spacing: 0.2em;
+          text-transform: uppercase; color: rgba(200,80,60,0.8); margin-bottom: 20px;
+        }
+
+        /* ── Panneau droit image ── */
+        .cine-img {
+          position: relative; overflow: hidden;
+        }
+        .cine-img-inner {
+          position: absolute; inset: 0;
+          background-size: cover; background-position: center;
+          transition: transform 1200ms cubic-bezier(.2,.8,.2,1);
+        }
+        .cine-section:hover .cine-img-inner { transform: scale(1.04); }
+        .cine-img-overlay {
+          position: absolute; inset: 0;
+          background: linear-gradient(105deg, var(--bg) 0%, transparent 30%);
+          pointer-events: none; z-index: 1;
+        }
+
+        /* ── Index produit coin bas droite ── */
+        .cine-index {
+          position: absolute; bottom: 36px; right: 40px; z-index: 3;
+          font-family: var(--mono); font-size: 9px; letter-spacing: 0.22em;
+          color: var(--fg); opacity: 0.35; writing-mode: vertical-rl;
+          text-transform: uppercase;
+        }
+
+        /* ── Header haut de page ── */
+        .cine-header {
+          min-height: 56vh; display: flex; flex-direction: column;
+          justify-content: flex-end; padding: 0 72px 64px;
+          border-bottom: 1px solid var(--hairline); position: relative;
+          overflow: hidden;
+        }
+        .cine-header-num {
+          position: absolute; right: -0.02em; bottom: -0.18em;
+          font-family: var(--serif); font-style: italic;
+          font-size: clamp(180px, 30vw, 420px);
+          color: var(--fg); opacity: 0.035; pointer-events: none;
+          line-height: 1; letter-spacing: -0.04em;
+        }
+        .cine-header-label {
+          font-family: var(--mono); font-size: 10px; letter-spacing: 0.35em;
+          text-transform: uppercase; opacity: 0.4; margin-bottom: 20px; z-index: 1;
+        }
+        .cine-header-title {
+          font-family: var(--serif); font-weight: 300; font-style: italic;
+          font-size: clamp(60px, 10vw, 140px); line-height: 0.9;
+          letter-spacing: -0.03em; z-index: 1;
+        }
+        .cine-header-sub {
+          margin-top: 32px; font-family: var(--mono); font-size: 10px;
+          letter-spacing: 0.25em; text-transform: uppercase; opacity: 0.45; z-index: 1;
+        }
 
         @media (max-width: 1024px) {
-          .mp-header { padding: 0 32px 52px; }
-          .mp-list { padding: 0 32px; }
-          .mp-item, .mp-item.reverse { grid-template-columns: 1fr; min-height: auto; }
-          .mp-item.reverse .mp-img { order: 1; }
-          .mp-item.reverse .mp-info { order: 2; }
-          .mp-img-inner { min-height: 70vw; }
-          .mp-info, .mp-item.reverse .mp-info { padding: 40px 32px 56px; }
+          .cine-section { grid-template-columns: 1fr; min-height: auto; }
+          .cine-img { min-height: 65vw; }
+          .cine-img-inner { position: relative; min-height: 65vw; }
+          .cine-img-overlay { display: none; }
+          .cine-info { padding: 48px 32px 60px; }
+          .cine-num { font-size: clamp(160px, 45vw, 300px); }
+          .cine-header { padding: 0 32px 48px; min-height: 40vh; }
         }
         @media (max-width: 600px) {
-          .mp-header { padding: 0 20px 40px; flex-direction: column; align-items: flex-start; gap: 28px; }
-          .mp-list { padding: 0 20px; }
-          .mp-info, .mp-item.reverse .mp-info { padding: 32px 20px 48px; }
-          .mp-filters { justify-content: flex-start; }
+          .cine-info { padding: 40px 20px 52px; }
+          .cine-header { padding: 0 20px 40px; }
+          .cine-bar { top: 72px; padding: 5px 8px; }
         }
       `}</style>
 
-      {/* Header */}
-      <div className="mp-header">
-        <div>
-          <div style={{ fontFamily: "var(--mono)", fontSize: 10, letterSpacing: "0.3em", textTransform: "uppercase", opacity: 0.45, marginBottom: 16 }}>
-            / 02 — La Collection
-          </div>
-          <h1 className="mp-title">La <em>Collection</em></h1>
-          <div className="mp-count">{visible.length} pièce{visible.length > 1 ? "s" : ""} · Édition courante</div>
-        </div>
-        <div>
-          <div className="mp-filters">
-            {CATEGORIES.map((cat) => (
-              <button
-                key={cat}
-                className={`mp-filter${filter === cat ? " active" : ""}`}
-                onClick={() => setFilter(cat)}
-              >
-                {cat}
-              </button>
-            ))}
-          </div>
-        </div>
-      </div>
+      <div className="cine-wrap" style={{ paddingTop: 140 }}>
 
-      {/* Liste éditoriale */}
-      <div className="mp-list">
+        {/* Filtre flottant */}
+        <div className="cine-bar">
+          <span className="cine-bar-label">Filtre</span>
+          {CATEGORIES.map((cat) => (
+            <button
+              key={cat}
+              className={`cine-f${filter === cat ? " active" : ""}`}
+              onClick={() => setFilter(cat)}
+            >
+              {cat}
+            </button>
+          ))}
+        </div>
+
+        {/* Header éditorial */}
+        <div className="cine-header">
+          <div className="cine-header-num">02</div>
+          <div className="cine-header-label">Toss by Toss · Abidjan</div>
+          <h1 className="cine-header-title">La<br /><em>Collection</em></h1>
+          <div className="cine-header-sub">{visible.length} pièce{visible.length !== 1 ? "s" : ""} · Édition courante · Cuir pleine fleur</div>
+        </div>
+
+        {/* Produits */}
         {visible.map((p: Product, i) => (
-          <article key={p.ref} className={`mp-item${i % 2 === 1 ? " reverse" : ""}`}>
+          <div key={p.ref} className="cine-section">
+
+            {/* Numéro géant en fond */}
+            <div className="cine-num" aria-hidden>
+              {String(i + 1).padStart(2, "0")}
+            </div>
+
+            {/* Infos */}
+            <div className="cine-info">
+              <div className="cine-meta">
+                <span className="cine-cat">{p.category}</span>
+                <span className="cine-ref">{p.ref}</span>
+              </div>
+
+              <h2 className="cine-name">{p.name}</h2>
+
+              <p className="cine-desc">
+                {p.description || "Pièce artisanale en cuir pleine fleur, façonnée à Abidjan. Chaque pièce porte l'empreinte de la main qui l'a créée."}
+              </p>
+
+              {p.colors.length > 0 && (
+                <div className="cine-colors">
+                  {p.colors.map((c) => (
+                    <div
+                      key={c.name}
+                      className="cine-swatch"
+                      title={c.label}
+                      style={{ background: c.hex, borderColor: "var(--hairline)" }}
+                    />
+                  ))}
+                </div>
+              )}
+
+              <div className="cine-divider" />
+              <div className="cine-price">{fmt(p.price)}</div>
+
+              {p.stock === 0 && <div className="cine-rupture">Rupture de stock</div>}
+
+              <div className="cine-actions">
+                <button
+                  className={`cine-add${added[p.ref] ? " added" : ""}`}
+                  onClick={(e) => handleAdd(e, p.ref)}
+                  disabled={p.stock === 0}
+                >
+                  {added[p.ref] ? "Ajouté ✓" : "Ajouter au panier"}
+                </button>
+                <Link href={`/marketplace/${p.slug}`} className="cine-see">
+                  Découvrir →
+                </Link>
+              </div>
+            </div>
 
             {/* Image */}
-            <div className="mp-img">
-              <Link href={`/marketplace/${p.slug}`} style={{ display: "block", height: "100%" }}>
+            <div className="cine-img">
+              <Link href={`/marketplace/${p.slug}`} style={{ display: "block", height: "100%", position: "absolute", inset: 0 }}>
                 <div
-                  className="mp-img-inner"
+                  className="cine-img-inner"
                   style={{
                     backgroundImage: p.imageUrl
                       ? `url('${p.imageUrl}')`
@@ -127,56 +289,14 @@ export default function MarketplacePage() {
                   }}
                 />
               </Link>
-              <span className="mp-img-tag">{p.category}</span>
-              <span className="mp-img-num">0{i + 1} / 0{visible.length}</span>
+              <div className="cine-img-overlay" />
+              <div className="cine-index">{p.ref} · {p.category}</div>
             </div>
 
-            {/* Infos */}
-            <div className="mp-info">
-              <div className="mp-ref">{p.ref}</div>
-              <h2 className="mp-name">{p.name}</h2>
-
-              {p.description ? (
-                <p className="mp-desc">{p.description}</p>
-              ) : (
-                <p className="mp-desc">Pièce artisanale en cuir pleine fleur, façonnée à Abidjan.</p>
-              )}
-
-              {p.colors.length > 0 && (
-                <div className="mp-colors">
-                  {p.colors.map((c) => (
-                    <div
-                      key={c.name}
-                      className="mp-color"
-                      title={c.label}
-                      style={{ background: c.hex, borderColor: "var(--hairline)" }}
-                    />
-                  ))}
-                </div>
-              )}
-
-              <div className="mp-price">{fmt(p.price)}</div>
-
-              {p.stock === 0 && <div className="mp-rupture">Rupture de stock</div>}
-
-              <div className="mp-actions">
-                <button
-                  className={`mp-btn-primary${added[p.ref] ? " added" : ""}`}
-                  onClick={(e) => handleAdd(e, p.ref)}
-                  disabled={p.stock === 0}
-                >
-                  <span>{added[p.ref] ? "Ajouté ✓" : "Ajouter au panier"}</span>
-                </button>
-                <Link href={`/marketplace/${p.slug}`} className="mp-btn-ghost">
-                  Voir la pièce
-                </Link>
-              </div>
-            </div>
-
-          </article>
+          </div>
         ))}
-      </div>
 
-    </section>
+      </div>
+    </>
   );
 }
