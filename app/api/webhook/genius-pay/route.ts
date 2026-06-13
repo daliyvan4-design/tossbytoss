@@ -12,63 +12,88 @@ export async function POST(req: NextRequest) {
   }
 
   const event = JSON.parse(rawBody);
-
-  if (event.event !== "payment.success") {
-    return NextResponse.json({ ok: true });
-  }
-
   const orderRef: string = event.order_ref;
 
-  const order = await db.order.findUnique({
-    where: { ref: orderRef },
-    include: {
-      items: { include: { product: { select: { id: true, name: true, ref: true } } } },
-    },
-  });
+  switch (event.event) {
 
-  if (!order || order.status !== "PENDING") {
-    return NextResponse.json({ ok: true });
+    case "payment.initiated": {
+      await db.order.updateMany({
+        where: { ref: orderRef, status: "PENDING" },
+        data: { paymentRef: event.payment_ref ?? null },
+      }).catch(console.error);
+      break;
+    }
+
+    case "payment.success": {
+      const order = await db.order.findUnique({
+        where: { ref: orderRef },
+        include: {
+          items: { include: { product: { select: { id: true, name: true, ref: true } } } },
+        },
+      });
+
+      if (!order || order.status !== "PENDING") break;
+
+      await db.$transaction([
+        db.order.update({
+          where: { ref: orderRef },
+          data: { status: "PAID", paymentRef: event.payment_ref ?? order.paymentRef },
+        }),
+        ...order.items.map((item) =>
+          db.product.update({
+            where: { id: item.productId },
+            data: { stock: { decrement: item.qty } },
+          })
+        ),
+        db.accountingEntry.create({
+          data: {
+            amount: order.total,
+            type: "SALE",
+            ref: `ACC-${orderRef}`,
+            orderId: order.id,
+          },
+        }),
+      ]);
+
+      await db.subscriber.upsert({
+        where: { email: order.customerEmail },
+        update: {},
+        create: { email: order.customerEmail, source: "CHECKOUT" },
+      }).catch(console.error);
+
+      await sendInvoice({
+        customerName: order.customerName,
+        customerEmail: order.customerEmail,
+        orderRef,
+        orderDate: order.createdAt.toLocaleDateString("fr-FR"),
+        items: order.items.map((i) => ({
+          name: i.product.name,
+          ref: i.product.ref,
+          qty: i.qty,
+          unitPrice: i.unitPrice,
+        })),
+        total: order.total,
+      }).catch(console.error);
+
+      break;
+    }
+
+    case "payment.failed": {
+      await db.order.updateMany({
+        where: { ref: orderRef, status: "PENDING" },
+        data: { status: "CANCELLED" },
+      }).catch(console.error);
+      break;
+    }
+
+    case "payment.canceled": {
+      await db.order.updateMany({
+        where: { ref: orderRef, status: "PENDING" },
+        data: { status: "CANCELLED" },
+      }).catch(console.error);
+      break;
+    }
   }
-
-  await db.$transaction([
-    db.order.update({ where: { ref: orderRef }, data: { status: "PAID" } }),
-    ...order.items.map((item) =>
-      db.product.update({
-        where: { id: item.productId },
-        data: { stock: { decrement: item.qty } },
-      })
-    ),
-    db.accountingEntry.create({
-      data: {
-        amount: order.total,
-        type: "SALE",
-        ref: `ACC-${orderRef}`,
-        orderId: order.id,
-      },
-    }),
-  ]);
-
-  await db.subscriber
-    .upsert({
-      where: { email: order.customerEmail },
-      update: {},
-      create: { email: order.customerEmail, source: "CHECKOUT" },
-    })
-    .catch(console.error);
-
-  await sendInvoice({
-    customerName: order.customerName,
-    customerEmail: order.customerEmail,
-    orderRef,
-    orderDate: order.createdAt.toLocaleDateString("fr-FR"),
-    items: order.items.map((i) => ({
-      name: i.product.name,
-      ref: i.product.ref,
-      qty: i.qty,
-      unitPrice: i.unitPrice,
-    })),
-    total: order.total,
-  }).catch(console.error);
 
   return NextResponse.json({ ok: true });
 }
