@@ -90,3 +90,26 @@ enum AccountingType {
   SALE
   REFUND
 }
+
+model GalleryItem {
+  id        String         @id @default(cuid())
+  imageUrl  String
+  name      String         @default("")
+  note      String         @default("")
+  section   GallerySection @default(CLIENTS)
+  aspect    GalleryAspect  @default(SQUARE)
+  position  Int            @default(0)
+  active    Boolean        @default(true)
+  createdAt DateTime       @default(now())
+}
+
+enum GallerySection {
+  CLIENTS
+  CONCEPTION
+}
+
+enum GalleryAspect {
+  TALL
+  WIDE
+  SQUARE
+}

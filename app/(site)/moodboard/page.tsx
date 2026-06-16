@@ -1,9 +1,48 @@
 import Link from "next/link";
 import type { Metadata } from "next";
+import { db } from "@/lib/db";
 
+export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Galerie — Toss by Toss" };
 
-export default function MoodboardPage() {
+const ASPECT_CLASS: Record<string, string> = {
+  TALL: "gf-tall",
+  WIDE: "gf-wide",
+  SQUARE: "gf-square",
+};
+
+export default async function MoodboardPage() {
+  const items = await db.galleryItem.findMany({
+    where: { active: true },
+    orderBy: [{ section: "asc" }, { position: "asc" }, { createdAt: "desc" }],
+  });
+
+  const clients    = items.filter((i) => i.section === "CLIENTS");
+  const conception = items.filter((i) => i.section === "CONCEPTION");
+
+  const FALLBACK_CLIENTS = [
+    { id: "f1", cls: "gf-tall",   img: "/uploads/WaveSpeed AI Image (2).png",          name: "Aminata D.",   note: "Sandales Ivoire · Porto-Novo" },
+    { id: "f2", cls: "gf-wide",   img: "/uploads/WaveSpeed AI Image (3).png",          name: "Kofi A.",      note: "Sac Croco Noir · Abidjan" },
+    { id: "f3", cls: "gf-square", img: "/uploads/WaveSpeed AI Image (5).png",          name: "Fatoumata B.", note: "Derby Caramel · Dakar" },
+    { id: "f4", cls: "gf-square", img: "/uploads/AI Images Creation.png",              name: "Habiba T.",    note: "Mule Dorée · Abidjan" },
+    { id: "f5", cls: "gf-tall",   img: "/uploads/AI Images from Text & Photo (1).png", name: "Séraphin M.", note: "Cartable Tabac · Paris" },
+    { id: "f6", cls: "gf-wide",   img: "/uploads/Image générée WaveSpeed AI (2).png",  name: "Nadia K.",     note: "Pochette Nude · Abidjan" },
+  ];
+  const FALLBACK_CONCEPTION = [
+    { id: "c1", cls: "gf-wide",   img: "/uploads/Image générée WaveSpeed AI (2)-edc11dba.png", name: "Esquisse № 12",     note: "Sac structuré · Étude de coupe" },
+    { id: "c2", cls: "gf-square", img: "/assets/leather-black.png",                             name: "Cuir pleine fleur", note: "Tannage végétal · Matière première" },
+    { id: "c3", cls: "gf-square", img: "/assets/leather-white.png",                             name: "Cuir naturel ivoire", note: "Avant finition · Atelier № 04" },
+    { id: "c4", cls: "gf-tall",   img: "/uploads/WaveSpeed AI Image (2).png",                   name: "Gabarit sandale",   note: "Modèle S-07 · Traçage à la craie" },
+    { id: "c5", cls: "gf-wide",   img: "/uploads/WaveSpeed AI Image (3).png",                   name: "Atelier Plateau",   note: "En cours de fabrication · Juin 2026" },
+  ];
+
+  const showClients    = clients.length > 0
+    ? clients.map((i) => ({ id: i.id, cls: ASPECT_CLASS[i.aspect] ?? "gf-square", img: i.imageUrl, name: i.name, note: i.note }))
+    : FALLBACK_CLIENTS;
+  const showConception = conception.length > 0
+    ? conception.map((i) => ({ id: i.id, cls: ASPECT_CLASS[i.aspect] ?? "gf-square", img: i.imageUrl, name: i.name, note: i.note }))
+    : FALLBACK_CONCEPTION;
+
   return (
     <section id="galerie" style={{ paddingTop: 180 }}>
       <div className="section-head">
@@ -22,15 +61,8 @@ export default function MoodboardPage() {
       </div>
 
       <div className="galerie-grid">
-        {[
-          { cls: "gf-tall", img: "/uploads/WaveSpeed AI Image (2).png", name: "Aminata D.", note: "Sandales Ivoire · Porto-Novo" },
-          { cls: "gf-wide", img: "/uploads/WaveSpeed AI Image (3).png", name: "Kofi A.", note: "Sac Croco Noir · Abidjan" },
-          { cls: "gf-square", img: "/uploads/WaveSpeed AI Image (5).png", name: "Fatoumata B.", note: "Derby Caramel · Dakar" },
-          { cls: "gf-square", img: "/uploads/AI Images Creation.png", name: "Habiba T.", note: "Mule Dorée · Abidjan" },
-          { cls: "gf-tall", img: "/uploads/AI Images from Text & Photo (1).png", name: "Séraphin M.", note: "Cartable Tabac · Paris" },
-          { cls: "gf-wide", img: "/uploads/Image générée WaveSpeed AI (2).png", name: "Nadia K.", note: "Pochette Nude · Abidjan" },
-        ].map(({ cls, img, name, note }) => (
-          <figure key={name} className={`galerie-frame ${cls}`}>
+        {showClients.map(({ id, cls, img, name, note }) => (
+          <figure key={id} className={`galerie-frame ${cls}`}>
             <div className="galerie-img" style={{ backgroundImage: `url('${img}')` }} />
             <figcaption>
               <span className="gf-name">{name}</span>
@@ -52,15 +84,9 @@ export default function MoodboardPage() {
       </div>
 
       <div className="galerie-grid galerie-grid--conception">
-        {[
-          { cls: "gf-wide", img: "/uploads/Image générée WaveSpeed AI (2)-edc11dba.png", name: "Esquisse № 12", note: "Sac structuré · Étude de coupe" },
-          { cls: "gf-square", img: "/assets/leather-black.png", name: "Cuir pleine fleur", note: "Tannage végétal · Matière première" },
-          { cls: "gf-square", img: "/assets/leather-white.png", name: "Cuir naturel ivoire", note: "Avant finition · Atelier № 04" },
-          { cls: "gf-tall", img: "/uploads/WaveSpeed AI Image (2).png", name: "Gabarit sandale", note: "Modèle S-07 · Traçage à la craie" },
-          { cls: "gf-wide", img: "/uploads/WaveSpeed AI Image (3).png", name: "Atelier Plateau", note: "En cours de fabrication · Mai 2026" },
-        ].map(({ cls, img, name, note }) => (
-          <figure key={name} className={`galerie-frame ${cls}`}>
-            <div className="galerie-img" style={{ backgroundImage: `url('${img}')`, backgroundSize: "cover" }} />
+        {showConception.map(({ id, cls, img, name, note }) => (
+          <figure key={id} className={`galerie-frame ${cls}`}>
+            <div className="galerie-img" style={{ backgroundImage: `url('${img}')` }} />
             <figcaption>
               <span className="gf-name">{name}</span>
               <span className="gf-note">{note}</span>
@@ -69,15 +95,11 @@ export default function MoodboardPage() {
         ))}
       </div>
 
-      <div className="galerie-closing">
-        <blockquote className="galerie-quote">
-          Chaque photo est une pièce qui vit.<span style={{ opacity: 0.35 }}>"</span>
-        </blockquote>
-        <Link href="/contact" className="cta" style={{ marginTop: 40 }}>
-          <span>Commandez sur mesure</span>
-          <span className="arrow">→</span>
-        </Link>
-      </div>
+      {clients.length === 0 && conception.length === 0 && (
+        <p style={{ textAlign: "center", padding: "48px 0 0", fontFamily: "var(--font-cormorant, Georgia, serif)", fontStyle: "italic", opacity: 0.3, fontSize: 16 }}>
+          Photos de démo · <Link href="/admin/moodboard" style={{ color: "inherit" }}>Gérer via l&apos;admin →</Link>
+        </p>
+      )}
     </section>
   );
 }
