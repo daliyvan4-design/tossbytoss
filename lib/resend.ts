@@ -2,6 +2,11 @@ import { Resend } from "resend";
 
 export const resend = new Resend(process.env.RESEND_API_KEY);
 
+// Quand le domaine Zoho sera vérifié dans Resend, changer RESEND_FROM dans les env Vercel.
+// Ex: "Toss by Toss <contact@tossbytoss.ci>"
+const FROM = process.env.RESEND_FROM ?? "Toss by Toss <onboarding@resend.dev>";
+const REPLY_TO = process.env.RESEND_REPLY_TO ?? "bobdali127@gmail.com";
+
 export interface InvoiceItem {
   name: string;
   ref: string;
@@ -144,7 +149,8 @@ export function buildInvoiceHtml(data: InvoiceData): string {
 
 export async function sendInvoice(data: InvoiceData) {
   return resend.emails.send({
-    from: "Toss by Toss <facture@tossbytoss.ci>",
+    from: FROM,
+    replyTo: REPLY_TO,
     to: data.customerEmail,
     subject: `Confirmation · Réf. ${data.orderRef} — Toss by Toss`,
     html: buildInvoiceHtml(data),
@@ -167,7 +173,8 @@ export async function sendBroadcast(
 
   for (const chunk of chunks) {
     const emails = chunk.map((sub) => ({
-      from: "Toss by Toss <lettre@tossbytoss.ci>",
+      from: FROM,
+      replyTo: REPLY_TO,
       to: sub.email,
       subject,
       html: htmlTemplate.replace("{{UNSUB_URL}}", buildUnsubscribeUrl(sub.unsubToken)),
@@ -177,9 +184,74 @@ export async function sendBroadcast(
   }
 }
 
+export async function sendStatusUpdate({
+  customerName,
+  customerEmail,
+  orderRef,
+  status,
+}: {
+  customerName: string;
+  customerEmail: string;
+  orderRef: string;
+  status: "SHIPPED" | "DELIVERED";
+}) {
+  const firstName = customerName.split(" ")[0];
+  const isShipped = status === "SHIPPED";
+
+  const subject = isShipped
+    ? `Votre commande est en route · Réf. ${orderRef}`
+    : `Votre commande est livrée · Réf. ${orderRef}`;
+
+  const headline = isShipped ? `En route, ${firstName}.` : `Livrée, ${firstName}.`;
+  const body = isShipped
+    ? "Votre commande a été expédiée. Elle vous parviendra dans les prochains jours. En cas de question, répondez à cet email."
+    : "Votre commande vous a été remise. Nous espérons qu'elle vous enchante. N'hésitez pas à nous partager vos impressions.";
+
+  const html = `<!DOCTYPE html>
+<html lang="fr">
+<head><meta charset="utf-8"/><title>${subject}</title></head>
+<body style="margin:0;padding:0;background:#0a0a0a;">
+<table width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#0a0a0a;">
+  <tr><td align="center" style="padding:48px 20px 64px;">
+    <table width="560" cellpadding="0" cellspacing="0" border="0" style="max-width:560px;width:100%;">
+      <tr>
+        <td style="padding:44px 52px 36px;border-bottom:1px solid rgba(245,242,236,0.12);">
+          <p style="margin:0;font-family:'Helvetica Neue',sans-serif;font-size:11px;font-weight:600;letter-spacing:0.36em;text-transform:uppercase;color:#f5f2ec;">Toss by Toss</p>
+          <p style="margin:7px 0 0;font-family:Georgia,serif;font-style:italic;font-size:12px;color:rgba(245,242,236,0.45);">L'art du cuir, fait à Abidjan.</p>
+        </td>
+      </tr>
+      <tr>
+        <td style="padding:48px 52px 36px;">
+          <p style="margin:0;font-family:Georgia,serif;font-style:italic;font-size:46px;line-height:1;color:#f5f2ec;">${headline}</p>
+          <p style="margin:22px 0 0;font-family:'Helvetica Neue',sans-serif;font-weight:300;font-size:15px;line-height:1.7;color:rgba(245,242,236,0.75);">${body}</p>
+        </td>
+      </tr>
+      <tr>
+        <td style="padding:0 52px 44px;">
+          <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-top:1px solid rgba(245,242,236,0.12);border-bottom:1px solid rgba(245,242,236,0.12);">
+            <tr><td style="padding:14px 0;">
+              <p style="margin:0;font-family:'Courier New',monospace;font-size:10px;letter-spacing:0.28em;text-transform:uppercase;color:rgba(245,242,236,0.45);">Réf. ${orderRef}</p>
+            </td></tr>
+          </table>
+        </td>
+      </tr>
+      <tr>
+        <td style="padding:0 52px 52px;border-top:1px solid rgba(245,242,236,0.08);">
+          <p style="margin:24px 0 0;font-family:'Courier New',monospace;font-size:9px;letter-spacing:0.2em;text-transform:uppercase;color:rgba(245,242,236,0.3);">@tossbytoss &nbsp;·&nbsp; Atelier № 04, Plateau, Abidjan</p>
+        </td>
+      </tr>
+    </table>
+  </td></tr>
+</table>
+</body></html>`;
+
+  return resend.emails.send({ from: FROM, replyTo: REPLY_TO, to: customerEmail, subject, html });
+}
+
 export async function sendNewsletterWelcome(email: string) {
   return resend.emails.send({
-    from: "Toss by Toss <lettre@tossbytoss.ci>",
+    from: FROM,
+    replyTo: REPLY_TO,
     to: email,
     subject: "Bienvenue dans le cercle · Toss by Toss",
     html: `<!DOCTYPE html>
