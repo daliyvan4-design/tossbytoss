@@ -4,6 +4,13 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { ImageUpload } from "./ImageUpload";
 
+interface ColorEntry {
+  name: string;
+  label: string;
+  hex: string;
+  tex: string;
+}
+
 interface ProductData {
   name: string;
   ref: string;
@@ -16,13 +23,13 @@ interface ProductData {
   texKey: string;
   description: string;
   details: string;
-  colors: string;
+  colors: ColorEntry[];
   sizes: string;
   active: boolean;
 }
 
 interface Props {
-  initial?: Partial<ProductData> & { ref?: string };
+  initial?: Partial<Omit<ProductData, "colors"> & { colors: string; ref?: string }>;
   isEdit?: boolean;
 }
 
@@ -50,6 +57,14 @@ const TEX_OPTIONS = [
   "leather-navy", "leather-burgundy", "leather-natural",
 ];
 
+function parseColors(raw: string | undefined): ColorEntry[] {
+  try { return JSON.parse(raw ?? "[]") as ColorEntry[]; } catch { return []; }
+}
+
+function autoName(label: string): string {
+  return label.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+}
+
 export function ProductForm({ initial, isEdit }: Props) {
   const router = useRouter();
   const [form, setForm] = useState<ProductData>({
@@ -64,12 +79,30 @@ export function ProductForm({ initial, isEdit }: Props) {
     texKey: initial?.texKey ?? "leather-black",
     description: initial?.description ?? "",
     details: initial?.details ?? "",
-    colors: initial?.colors ?? "[]",
+    colors: parseColors(initial?.colors),
     sizes: initial?.sizes ?? "",
     active: initial?.active ?? true,
   });
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
+
+  function addColor() {
+    setForm((f) => ({ ...f, colors: [...f.colors, { name: "", label: "", hex: "#8B6F5C", tex: "leather-cognac" }] }));
+  }
+  function removeColor(i: number) {
+    setForm((f) => ({ ...f, colors: f.colors.filter((_, idx) => idx !== i) }));
+  }
+  function updateColor(i: number, key: keyof ColorEntry, value: string) {
+    setForm((f) => {
+      const colors = f.colors.map((c, idx) => {
+        if (idx !== i) return c;
+        const updated = { ...c, [key]: value };
+        if (key === "label") updated.name = autoName(value);
+        return updated;
+      });
+      return { ...f, colors };
+    });
+  }
 
   function slugify(name: string) {
     return name.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "")
@@ -80,15 +113,6 @@ export function ProductForm({ initial, isEdit }: Props) {
     e.preventDefault();
     setSaving(true);
     setError("");
-
-    let colorsJson: unknown[];
-    try {
-      colorsJson = JSON.parse(form.colors || "[]");
-    } catch {
-      setError("Couleurs : JSON invalide. Vérifiez le format.");
-      setSaving(false);
-      return;
-    }
 
     const payload = {
       name: form.name,
@@ -102,7 +126,7 @@ export function ProductForm({ initial, isEdit }: Props) {
       texKey: form.texKey,
       description: form.description,
       details: form.details.split("\n").map((s) => s.trim()).filter(Boolean),
-      colors: colorsJson,
+      colors: form.colors.filter((c) => c.label.trim()),
       sizes: form.sizes.split(",").map((s) => s.trim()).filter(Boolean),
       active: form.active,
     };
@@ -199,15 +223,57 @@ export function ProductForm({ initial, isEdit }: Props) {
         />
       </div>
 
-      <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-        <label style={LABEL_STYLE}>Couleurs (JSON)</label>
-        <textarea
-          value={form.colors}
-          onChange={(e) => setForm((f) => ({ ...f, colors: e.target.value }))}
-          rows={5}
-          style={{ ...INPUT_STYLE, resize: "vertical", fontFamily: "var(--font-jetbrains, monospace)", fontSize: 12, lineHeight: 1.6 }}
-          placeholder={`[{"name":"noir","label":"Noir Ébène","tex":"leather-black","hex":"#1a1a1a"}]`}
-        />
+      {/* Éditeur de couleurs */}
+      <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+        <label style={LABEL_STYLE}>Coloris disponibles</label>
+
+        {form.colors.map((c, i) => (
+          <div key={i} style={{ display: "grid", gridTemplateColumns: "36px 1fr 1fr auto auto", gap: 8, alignItems: "center", padding: "10px 12px", border: "1px solid rgba(245,242,236,0.12)" }}>
+            {/* Swatch / color picker */}
+            <label style={{ width: 36, height: 36, borderRadius: "50%", background: c.hex, cursor: "pointer", display: "block", border: "2px solid rgba(245,242,236,0.2)", overflow: "hidden", position: "relative" }}>
+              <input
+                type="color"
+                value={c.hex}
+                onChange={(e) => updateColor(i, "hex", e.target.value)}
+                style={{ position: "absolute", inset: 0, opacity: 0, cursor: "pointer", width: "100%", height: "100%" }}
+              />
+            </label>
+
+            {/* Label (nom affiché) */}
+            <input
+              type="text"
+              placeholder="Nom affiché — ex: Noir Ébène"
+              value={c.label}
+              onChange={(e) => updateColor(i, "label", e.target.value)}
+              style={{ ...INPUT_STYLE, fontSize: 14 }}
+            />
+
+            {/* Texture */}
+            <select
+              value={c.tex}
+              onChange={(e) => updateColor(i, "tex", e.target.value)}
+              style={{ ...INPUT_STYLE, fontFamily: "var(--font-jetbrains, monospace)", fontSize: 11 }}
+            >
+              {TEX_OPTIONS.map((t) => (
+                <option key={t} value={t} style={{ background: "#0a0a0a" }}>{t}</option>
+              ))}
+            </select>
+
+            {/* Hex affiché */}
+            <span style={{ fontFamily: "var(--font-jetbrains, monospace)", fontSize: 10, opacity: 0.4, whiteSpace: "nowrap" }}>{c.hex}</span>
+
+            {/* Supprimer */}
+            <button type="button" onClick={() => removeColor(i)} style={{ background: "transparent", border: "none", color: "rgba(245,100,100,0.7)", fontSize: 18, cursor: "pointer", lineHeight: 1, padding: "0 4px" }}>×</button>
+          </div>
+        ))}
+
+        <button
+          type="button"
+          onClick={addColor}
+          style={{ padding: "8px 16px", background: "transparent", border: "1px dashed rgba(245,242,236,0.2)", color: "var(--fg)", fontFamily: "var(--font-jetbrains, monospace)", fontSize: 9, letterSpacing: "0.22em", textTransform: "uppercase", cursor: "pointer", alignSelf: "flex-start", opacity: 0.6 }}
+        >
+          + Ajouter un coloris
+        </button>
       </div>
 
       <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>

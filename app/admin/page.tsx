@@ -103,7 +103,7 @@ export default async function AdminDashboard() {
               {recentOrders.map((o) => {
                 const s = STATUS_LABELS[o.status] ?? { label: o.status, color: "white" };
                 return (
-                  <tr key={o.ref} style={{ borderBottom: "1px solid rgba(245,242,236,0.06)" }}>
+                  <tr key={o.ref} style={{ borderBottom: "1px solid rgba(245,242,236,0.06)", cursor: "pointer" }}>
                     <td style={{ padding: "14px 28px", fontFamily: "var(--font-jetbrains, monospace)", fontSize: 10, opacity: 0.7 }}>{o.ref}</td>
                     <td style={{ padding: "14px 28px", fontFamily: "var(--font-cormorant, Georgia, serif)", fontStyle: "italic", fontSize: 17 }}>{o.customerName}</td>
                     <td style={{ padding: "14px 28px", fontFamily: "var(--font-jetbrains, monospace)", fontSize: 10 }}>{fmt(o.total)}</td>
@@ -111,6 +111,9 @@ export default async function AdminDashboard() {
                       <span style={{ fontFamily: "var(--font-jetbrains, monospace)", fontSize: 9, letterSpacing: "0.18em", textTransform: "uppercase", color: s.color }}>{s.label}</span>
                     </td>
                     <td style={{ padding: "14px 28px", fontFamily: "var(--font-jetbrains, monospace)", fontSize: 9, opacity: 0.4 }}>{o.createdAt.toLocaleDateString("fr-FR")}</td>
+                    <td style={{ padding: "14px 28px" }}>
+                      <Link href={`/admin/commandes/${o.ref}`} style={{ fontFamily: "var(--font-jetbrains, monospace)", fontSize: 9, letterSpacing: "0.18em", textTransform: "uppercase", opacity: 0.45, textDecoration: "none" }}>→</Link>
+                    </td>
                   </tr>
                 );
               })}

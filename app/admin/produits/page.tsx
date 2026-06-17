@@ -27,14 +27,25 @@ export default async function AdminProduitsPage() {
       <table style={{ width: "100%", borderCollapse: "collapse" }}>
         <thead>
           <tr style={{ borderBottom: "1px solid rgba(245,242,236,0.08)" }}>
-            {["Réf.", "Nom", "Prix", "Stock", "Statut", ""].map((h) => (
-              <th key={h} style={{ padding: "12px 20px", textAlign: "left", fontFamily: "var(--font-jetbrains, monospace)", fontSize: 9, letterSpacing: "0.22em", textTransform: "uppercase", opacity: 0.4, fontWeight: 400 }}>{h}</th>
+            {["", "Réf.", "Nom", "Prix", "Stock", "Statut", ""].map((h, i) => (
+              <th key={i} style={{ padding: "12px 20px", textAlign: "left", fontFamily: "var(--font-jetbrains, monospace)", fontSize: 9, letterSpacing: "0.22em", textTransform: "uppercase", opacity: 0.4, fontWeight: 400 }}>{h}</th>
             ))}
           </tr>
         </thead>
         <tbody>
           {products.map((p) => (
             <tr key={p.ref} style={{ borderBottom: "1px solid rgba(245,242,236,0.06)" }}>
+              {/* Thumbnail */}
+              <td style={{ padding: "10px 20px", width: 56 }}>
+                <div style={{
+                  width: 42, height: 52,
+                  backgroundImage: p.imageUrl ? `url('${p.imageUrl}')` : `url('/assets/leather-black.png')`,
+                  backgroundSize: "cover",
+                  backgroundPosition: (p as { imagePos?: string }).imagePos ?? "center",
+                  opacity: p.active ? 1 : 0.35,
+                  flexShrink: 0,
+                }} />
+              </td>
               <td style={{ padding: "14px 20px", fontFamily: "var(--font-jetbrains, monospace)", fontSize: 10, opacity: 0.6 }}>{p.ref}</td>
               <td style={{ padding: "14px 20px", fontFamily: "var(--font-cormorant, Georgia, serif)", fontStyle: "italic", fontSize: 17 }}>{p.name}</td>
               <td style={{ padding: "14px 20px", fontFamily: "var(--font-jetbrains, monospace)", fontSize: 10 }}>{fmt(p.price)}</td>
