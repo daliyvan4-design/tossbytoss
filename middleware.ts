@@ -7,6 +7,7 @@ export function middleware(request: NextRequest) {
   // Admin auth guard
   if (pathname.startsWith("/admin") || pathname.startsWith("/api/admin")) {
     if (pathname.startsWith("/admin/login")) return NextResponse.next();
+    if (pathname === "/api/admin/auth") return NextResponse.next();
 
     const session = request.cookies.get("admin_session")?.value;
     const secret = process.env.ADMIN_SECRET;
