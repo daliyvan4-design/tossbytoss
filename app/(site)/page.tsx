@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import type { Metadata } from "next";
+import LogoReel from "@/components/LogoReel";
 
 export const metadata: Metadata = {
   title: "Toss by Toss — L'art du cuir, fait à Abidjan",
@@ -79,6 +80,8 @@ export default function HomePage() {
           </article>
         </div>
       </section>
+
+      <LogoReel />
     </>
   );
 }
