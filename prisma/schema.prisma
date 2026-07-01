@@ -113,3 +113,14 @@ enum GalleryAspect {
   WIDE
   SQUARE
 }
+
+model Popup {
+  id       String  @id @default("main")
+  active   Boolean @default(false)
+  badge    String  @default("Édition Fête")
+  title    String  @default("")
+  subtitle String  @default("")
+  imageUrl String  @default("")
+  ctaLabel String  @default("Découvrir la collection")
+  ctaUrl   String  @default("/marketplace")
+}

@@ -11,6 +11,7 @@ const NAV = [
   { href: "/admin/comptabilite", label: "Comptabilité", num: "05" },
   { href: "/admin/newsletter",   label: "Newsletter",   num: "06" },
   { href: "/admin/moodboard",    label: "Moodboard",    num: "07" },
+  { href: "/admin/popup",        label: "Popup",        num: "08" },
 ];
 
 export function AdminNav() {
