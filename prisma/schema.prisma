@@ -30,13 +30,17 @@ model Product {
 }
 
 model User {
-  id           String   @id @default(cuid())
-  email        String   @unique
-  name         String?
-  image        String?
-  passwordHash String?
-  provider     String   @default("credentials")
-  createdAt    DateTime @default(now())
+  id            String    @id @default(cuid())
+  email         String    @unique
+  name          String?
+  image         String?
+  passwordHash  String?
+  provider      String    @default("credentials")
+  emailVerified DateTime?
+  otpHash       String?
+  otpExpiresAt  DateTime?
+  otpAttempts   Int       @default(0)
+  createdAt     DateTime  @default(now())
 }
 
 model Order {

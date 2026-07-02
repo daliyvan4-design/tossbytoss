@@ -24,6 +24,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         if (!user?.passwordHash) return null;
         const ok = await bcrypt.compare(password, user.passwordHash);
         if (!ok) return null;
+        // Email non vérifié → connexion refusée (l'UI propose de renvoyer le code).
+        if (!user.emailVerified) return null;
         return { id: user.id, email: user.email, name: user.name };
       },
     }),
@@ -34,12 +36,13 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         const { db } = await import("@/lib/db");
         await db.user.upsert({
           where: { email: user.email.toLowerCase() },
-          update: { name: user.name ?? undefined, image: user.image ?? undefined },
+          update: { name: user.name ?? undefined, image: user.image ?? undefined, emailVerified: new Date() },
           create: {
             email: user.email.toLowerCase(),
             name: user.name,
             image: user.image,
             provider: "google",
+            emailVerified: new Date(),
           },
         }).catch(console.error);
       }

@@ -21,3 +21,10 @@ export const adminLimiter = new Ratelimit({
   limiter: Ratelimit.slidingWindow(20, "1 m"),
   prefix: "rl:admin",
 });
+
+// 10 OTP verify/resend attempts per IP per 10 minutes
+export const otpLimiter = new Ratelimit({
+  redis,
+  limiter: Ratelimit.slidingWindow(10, "10 m"),
+  prefix: "rl:otp",
+});

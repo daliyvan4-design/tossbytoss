@@ -262,6 +262,69 @@ export async function sendStatusUpdate({
   return resend.emails.send({ from: FROM, replyTo: REPLY_TO, to: customerEmail, subject, html });
 }
 
+export async function sendWelcomeOtp({
+  name,
+  email,
+  code,
+}: {
+  name?: string | null;
+  email: string;
+  code: string;
+}) {
+  const firstName = name?.split(" ")[0];
+  const greeting = firstName ? `Bienvenue, ${firstName}.` : "Bienvenue.";
+  const spaced = code.split("").join("&nbsp;&nbsp;");
+
+  return resend.emails.send({
+    from: FROM,
+    replyTo: REPLY_TO,
+    to: email,
+    subject: `Votre code de vérification : ${code} · Toss by Toss`,
+    html: `<!DOCTYPE html>
+<html lang="fr">
+<head><meta charset="utf-8"/><title>Bienvenue — Toss by Toss</title></head>
+<body style="margin:0;padding:0;background-color:#0a0a0a;-webkit-font-smoothing:antialiased;">
+<table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#0a0a0a;">
+  <tr>
+    <td align="center" style="padding:48px 20px 64px;">
+      <table width="600" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;width:100%;">
+        <tr>
+          <td style="padding:52px 52px 44px;border-bottom:1px solid rgba(245,242,236,0.13);">
+            <p style="margin:0;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:11px;font-weight:600;letter-spacing:0.36em;text-transform:uppercase;color:#f5f2ec;">Toss by Toss</p>
+            <p style="margin:7px 0 0;font-family:Georgia,serif;font-style:italic;font-size:12px;color:rgba(245,242,236,0.45);">L'art du cuir, fait à Abidjan.</p>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:52px 52px 8px;">
+            <p style="margin:0;font-family:Georgia,'Times New Roman',serif;font-style:italic;font-size:44px;line-height:1.05;letter-spacing:-0.01em;color:#f5f2ec;">${greeting}</p>
+            <p style="margin:20px 0 0;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-weight:300;font-size:15px;line-height:1.65;color:rgba(245,242,236,0.75);">Merci d'avoir créé votre compte. Pour l'activer, saisissez le code ci-dessous sur la page de vérification.</p>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:36px 52px 8px;">
+            <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border:1px solid rgba(245,242,236,0.14);background-color:rgba(245,242,236,0.04);">
+              <tr><td align="center" style="padding:28px 20px;">
+                <p style="margin:0 0 10px;font-family:'Courier New',Courier,monospace;font-size:9px;letter-spacing:0.34em;text-transform:uppercase;color:rgba(245,242,236,0.4);">Code de vérification</p>
+                <p style="margin:0;font-family:'Courier New',Courier,monospace;font-size:38px;font-weight:700;letter-spacing:0.12em;color:#f5f2ec;">${spaced}</p>
+              </td></tr>
+            </table>
+            <p style="margin:16px 0 0;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:12px;line-height:1.6;color:rgba(245,242,236,0.45);">Ce code expire dans 10 minutes. Si vous n'êtes pas à l'origine de cette demande, ignorez cet email.</p>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:44px 52px 52px;border-top:1px solid rgba(245,242,236,0.08);">
+            <p style="margin:0;font-family:'Courier New',Courier,monospace;font-size:10px;letter-spacing:0.22em;text-transform:uppercase;color:rgba(245,242,236,0.35);">@tossbytoss &nbsp;·&nbsp; Abidjan, Côte d'Ivoire</p>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+</body>
+</html>`,
+  });
+}
+
 export async function sendNewsletterWelcome(email: string) {
   return resend.emails.send({
     from: FROM,
