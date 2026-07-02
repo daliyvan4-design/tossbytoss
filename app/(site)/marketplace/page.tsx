@@ -197,7 +197,7 @@ export default function MarketplacePage() {
         }
       `}</style>
 
-      <div style={{ paddingTop: 140 }}>
+      <main style={{ paddingTop: 140 }}>
 
         {/* ── En-tête ── */}
         <div className="mp-head">
@@ -271,7 +271,7 @@ export default function MarketplacePage() {
           ))}
         </div>
 
-      </div>
+      </main>
     </>
   );
 }
