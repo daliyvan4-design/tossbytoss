@@ -5,11 +5,11 @@ import { useState } from "react";
 import Link from "next/link";
 import type { Product } from "@/lib/products";
 
-const CATEGORIES = ["Tout", "Sac", "Ceinture", "Maroquinerie", "Soulier"];
+const CATEGORIES = ["Tout", "Sac", "Ceinture", "Maroquinerie", "Soulier", "Chaussure"];
 
 export default function MarketplacePage() {
   const { addToCart, fmt, products } = useCart();
-  const [added, setAdded] = useState<Record<string, boolean>>({});
+  const [added, setAdded]   = useState<Record<string, boolean>>({});
   const [filter, setFilter] = useState("Tout");
 
   function handleAdd(e: React.MouseEvent, ref: string) {
@@ -20,249 +20,215 @@ export default function MarketplacePage() {
     setTimeout(() => setAdded((prev) => ({ ...prev, [ref]: false })), 2000);
   }
 
-  const visible = filter === "Tout" ? products : products.filter((p) => p.category === filter);
+  const visible = filter === "Tout"
+    ? products
+    : products.filter((p) => p.category.toLowerCase().includes(filter.toLowerCase()));
 
   return (
     <>
       <style>{`
-
-        /* ── En-tête ── */
-        .roi-head {
+        /* ── En-tête ──────────────────────────────────── */
+        .mp-head {
           max-width: 1440px; margin: 0 auto;
-          padding: 0 80px 80px;
-          display: flex; align-items: flex-end; justify-content: space-between;
-          gap: 48px; border-bottom: 1px solid var(--hairline);
+          padding: 0 48px 56px;
+          display: flex; align-items: flex-end;
+          justify-content: space-between; gap: 40px;
+          border-bottom: 1px solid var(--hairline);
         }
-        .roi-head-left { flex: 1; }
-        .roi-eyebrow {
-          font-family: var(--mono); font-size: 9px; letter-spacing: 0.42em;
-          text-transform: uppercase; opacity: 0.38; margin-bottom: 28px;
-          display: flex; align-items: center; gap: 16px;
+        .mp-eyebrow {
+          font-family: var(--mono); font-size: 9px; letter-spacing: 0.38em;
+          text-transform: uppercase; opacity: 0.38; margin-bottom: 20px;
+          display: flex; align-items: center; gap: 14px;
         }
-        .roi-eyebrow::before { content: ""; display: block; width: 32px; height: 1px; background: currentColor; opacity: 0.5; }
-        .roi-title {
+        .mp-eyebrow::before { content:""; width: 28px; height: 1px; background: currentColor; opacity: 0.5; }
+        .mp-title {
           font-family: var(--serif); font-weight: 300;
-          font-size: clamp(56px, 8vw, 120px);
-          line-height: 0.9; letter-spacing: -0.025em;
+          font-size: clamp(40px, 5.5vw, 80px);
+          line-height: 0.93; letter-spacing: -0.02em;
         }
-        .roi-title em { font-style: italic; }
-        .roi-manifeste {
-          margin-top: 36px;
-          font-family: var(--serif); font-style: italic;
-          font-size: 18px; line-height: 1.75; opacity: 0.55; max-width: 36ch;
+        .mp-title em { font-style: italic; }
+        .mp-sub {
+          margin-top: 18px; font-family: var(--serif); font-style: italic;
+          font-size: 16px; line-height: 1.7; opacity: 0.5; max-width: 36ch;
         }
-        .roi-filters {
-          display: flex; flex-direction: column; align-items: flex-end;
-          gap: 4px; padding-bottom: 8px;
+        .mp-filters {
+          display: flex; flex-direction: column; align-items: flex-end; gap: 3px;
         }
-        .roi-filters-label {
+        .mp-filters-lbl {
           font-family: var(--mono); font-size: 8px; letter-spacing: 0.3em;
           text-transform: uppercase; opacity: 0.3; margin-bottom: 10px;
-          text-align: right;
         }
-        .roi-f {
-          font-family: var(--mono); font-size: 9px; letter-spacing: 0.24em;
-          text-transform: uppercase; padding: 7px 18px;
+        .mp-f {
+          font-family: var(--mono); font-size: 9px; letter-spacing: 0.22em;
+          text-transform: uppercase; padding: 6px 16px;
           border: 1px solid transparent; background: transparent;
-          color: var(--fg); cursor: pointer; transition: all 220ms ease;
-          text-align: right;
+          color: var(--fg); cursor: pointer; transition: all 200ms;
         }
-        .roi-f:hover { border-color: var(--hairline); }
-        .roi-f.active {
-          border-color: var(--fg);
-          background: var(--fg); color: var(--bg);
-        }
+        .mp-f:hover { border-color: var(--hairline); }
+        .mp-f.active { border-color: var(--fg); background: var(--fg); color: var(--bg); }
 
-        /* ── Item produit ── */
-        .roi-item {
+        /* ── Grille produits ───────────────────────────── */
+        .mp-grid {
+          max-width: 1440px; margin: 0 auto;
+          padding: 56px 48px 120px;
           display: grid;
-          grid-template-columns: 38fr 62fr;
-          min-height: 92vh;
-          border-bottom: 1px solid var(--hairline);
-          max-width: 100%;
-          overflow: hidden;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 40px 28px;
         }
-        .roi-item.flip { grid-template-columns: 62fr 38fr; }
-        .roi-item.flip .roi-img  { order: 1; }
-        .roi-item.flip .roi-info { order: 2; }
 
-        /* ── Image ── */
-        .roi-img {
+        /* ── Carte produit ─────────────────────────────── */
+        .mp-card { display: flex; flex-direction: column; text-decoration: none; color: var(--fg); }
+
+        /* Image */
+        .mp-card-img {
           position: relative; overflow: hidden;
-          background: var(--hairline);
+          aspect-ratio: 3 / 4;
+          background: rgba(128,120,110,0.1);
+          margin-bottom: 20px;
         }
-        .roi-img-bg {
+        .mp-card-img-bg {
           position: absolute; inset: 0;
           background-size: cover; background-position: center;
-          transition: transform 1400ms cubic-bezier(.16,1,.3,1);
-          will-change: transform;
+          transition: transform 900ms cubic-bezier(.16,1,.3,1);
         }
-        .roi-item:hover .roi-img-bg { transform: scale(1.06); }
+        .mp-card:hover .mp-card-img-bg { transform: scale(1.05); }
 
-        /* gradient latéral pour fondre sur l'info */
-        .roi-img-fade {
-          position: absolute; inset: 0; pointer-events: none; z-index: 1;
+        /* Overlay hover */
+        .mp-card-overlay {
+          position: absolute; inset: 0; z-index: 2;
+          background: rgba(10,10,10,0.32);
+          display: flex; align-items: flex-end; justify-content: center;
+          padding-bottom: 28px;
+          opacity: 0; transition: opacity 300ms;
         }
-        .roi-item:not(.flip) .roi-img-fade {
-          background: linear-gradient(to left, transparent 60%, var(--bg) 100%);
-        }
-        .roi-item.flip .roi-img-fade {
-          background: linear-gradient(to right, transparent 60%, var(--bg) 100%);
-        }
-
-        .roi-img-stamp {
-          position: absolute; bottom: 40px; z-index: 2;
-          font-family: var(--mono); font-size: 8px; letter-spacing: 0.3em;
-          text-transform: uppercase; opacity: 0.45;
-          writing-mode: vertical-rl;
-        }
-        .roi-item:not(.flip) .roi-img-stamp { right: 32px; }
-        .roi-item.flip .roi-img-stamp { left: 32px; transform: rotate(180deg); }
-
-        /* ── Infos ── */
-        .roi-info {
-          padding: 80px 64px;
-          display: flex; flex-direction: column; justify-content: center;
-          position: relative; z-index: 2;
+        .mp-card:hover .mp-card-overlay { opacity: 1; }
+        .mp-card-see {
+          font-family: var(--mono); font-size: 9px; letter-spacing: 0.28em;
+          text-transform: uppercase; color: #f5f2ec;
+          border-bottom: 1px solid rgba(245,242,236,0.5);
+          padding-bottom: 2px;
         }
 
-        .roi-num {
-          font-family: var(--serif); font-style: italic;
-          font-size: 11px; letter-spacing: 0.2em; opacity: 0.28;
-          margin-bottom: 36px; display: flex; align-items: center; gap: 14px;
-        }
-        .roi-num::after { content: ""; flex: 1; max-width: 48px; height: 1px; background: currentColor; opacity: 0.4; }
-
-        .roi-cat {
-          font-family: var(--mono); font-size: 8px; letter-spacing: 0.42em;
-          text-transform: uppercase; opacity: 0.38; margin-bottom: 18px;
-        }
-
-        .roi-name {
-          font-family: var(--serif); font-style: italic; font-weight: 300;
-          font-size: clamp(44px, 5.5vw, 80px);
-          line-height: 0.93; letter-spacing: -0.02em;
-          margin-bottom: 36px;
-        }
-
-        .roi-desc {
-          font-family: var(--serif); font-size: 17px; line-height: 1.82;
-          opacity: 0.6; max-width: 32ch; margin-bottom: 44px;
-          font-weight: 400;
-        }
-
-        .roi-matiere {
-          display: flex; align-items: center; gap: 10px;
-          font-family: var(--mono); font-size: 8px; letter-spacing: 0.3em;
-          text-transform: uppercase; opacity: 0.4; margin-bottom: 28px;
-        }
-        .roi-matiere::before { content: ""; width: 20px; height: 1px; background: currentColor; }
-
-        .roi-colors { display: flex; gap: 12px; margin-bottom: 48px; align-items: center; }
-        .roi-color-wrap { display: flex; align-items: center; gap: 8px; }
-        .roi-swatch {
-          width: 18px; height: 18px; border-radius: 50%;
-          box-shadow: 0 0 0 1px var(--hairline), 0 0 0 3px transparent;
-          transition: box-shadow 200ms;
-          cursor: default;
-        }
-        .roi-swatch:hover { box-shadow: 0 0 0 1px var(--fg), 0 0 0 3px var(--bg), 0 0 0 4px var(--fg); }
-        .roi-color-label {
+        /* Badge stock */
+        .mp-card-badge {
+          position: absolute; top: 14px; left: 14px; z-index: 3;
           font-family: var(--mono); font-size: 8px; letter-spacing: 0.22em;
-          text-transform: uppercase; opacity: 0.35;
+          text-transform: uppercase; padding: 4px 9px;
+          background: rgba(200,70,50,0.88); color: #fff;
         }
 
-        .roi-hr { width: 100%; height: 1px; background: var(--hairline); margin-bottom: 40px; }
+        /* Ref stamp */
+        .mp-card-ref {
+          position: absolute; bottom: 14px; right: 14px; z-index: 3;
+          font-family: var(--mono); font-size: 8px; letter-spacing: 0.18em;
+          text-transform: uppercase; opacity: 0.45; color: #f5f2ec;
+        }
 
-        .roi-price-row { display: flex; align-items: baseline; gap: 24px; margin-bottom: 48px; }
-        .roi-price {
+        /* Infos sous l'image */
+        .mp-card-cat {
+          font-family: var(--mono); font-size: 8px; letter-spacing: 0.32em;
+          text-transform: uppercase; opacity: 0.38; margin-bottom: 8px;
+        }
+        .mp-card-name {
+          font-family: var(--serif); font-style: italic; font-weight: 300;
+          font-size: clamp(22px, 2vw, 28px); line-height: 1.0;
+          letter-spacing: -0.01em; margin-bottom: 14px;
+        }
+
+        /* Swatches */
+        .mp-card-swatches { display: flex; gap: 6px; margin-bottom: 16px; align-items: center; }
+        .mp-swatch {
+          width: 14px; height: 14px; border-radius: 50%;
+          border: 1.5px solid rgba(128,120,110,0.25);
+          flex-shrink: 0;
+        }
+        .mp-swatch-more {
+          font-family: var(--mono); font-size: 8px; letter-spacing: 0.1em;
+          opacity: 0.35;
+        }
+
+        /* Prix + bouton */
+        .mp-card-bottom {
+          display: flex; align-items: center;
+          justify-content: space-between; gap: 12px;
+          border-top: 1px solid var(--hairline); padding-top: 14px;
+          margin-top: auto;
+        }
+        .mp-card-price {
           font-family: var(--serif); font-style: italic;
-          font-size: clamp(30px, 3.2vw, 46px); letter-spacing: -0.01em;
+          font-size: clamp(20px, 1.8vw, 26px);
         }
-        .roi-stock {
-          font-family: var(--mono); font-size: 8px; letter-spacing: 0.25em;
-          text-transform: uppercase;
-        }
-        .roi-stock.out { color: rgba(200,80,60,0.75); }
-        .roi-stock.in { color: rgba(80,160,100,0.7); }
-
-        .roi-ctas { display: flex; align-items: center; gap: 14px; }
-        .roi-btn-add {
-          padding: 15px 40px;
+        .mp-card-add {
+          font-family: var(--mono); font-size: 8px; letter-spacing: 0.24em;
+          text-transform: uppercase; padding: 9px 16px;
           background: var(--fg); color: var(--bg);
-          font-family: var(--mono); font-size: 9px; font-weight: 700;
-          letter-spacing: 0.3em; text-transform: uppercase;
           border: none; cursor: pointer;
-          transition: opacity 300ms ease;
+          transition: opacity 250ms; white-space: nowrap;
+          flex-shrink: 0;
         }
-        .roi-btn-add:hover { opacity: 0.78; }
-        .roi-btn-add:disabled { opacity: 0.25; cursor: default; }
-        .roi-btn-add.added { opacity: 0.38; }
-        .roi-btn-see {
-          font-family: var(--mono); font-size: 9px; letter-spacing: 0.24em;
-          text-transform: uppercase; color: var(--fg); text-decoration: none;
-          opacity: 0.5; transition: opacity 220ms;
-          display: inline-flex; align-items: center; gap: 8px;
-          border-bottom: 1px solid var(--hairline); padding-bottom: 2px;
-        }
-        .roi-btn-see:hover { opacity: 1; border-bottom-color: var(--fg); }
+        .mp-card-add:hover { opacity: 0.75; }
+        .mp-card-add:disabled { opacity: 0.22; cursor: default; }
+        .mp-card-add.added { opacity: 0.4; }
 
-        @media (max-width: 1080px) {
-          .roi-head { padding: 0 40px 60px; }
-          .roi-item, .roi-item.flip { grid-template-columns: 1fr; min-height: auto; }
-          .roi-item .roi-img  { order: 1; min-height: 70vw; }
-          .roi-item .roi-info { order: 2; }
-          .roi-item.flip .roi-img  { order: 1; min-height: 70vw; }
-          .roi-item.flip .roi-info { order: 2; }
-          .roi-img-bg { position: relative; min-height: 70vw; }
-          .roi-img-fade { display: none; }
-          .roi-info { padding: 48px 40px 64px; }
+        /* Vide */
+        .mp-empty {
+          grid-column: 1/-1; padding: 120px 0; text-align: center;
+          font-family: var(--serif); font-style: italic; font-size: 22px; opacity: 0.35;
         }
-        @media (max-width: 600px) {
-          .roi-head { padding: 0 24px 48px; flex-direction: column; align-items: flex-start; }
-          .roi-filters { align-items: flex-start; }
-          .roi-f { text-align: left; }
-          .roi-info { padding: 36px 24px 52px; }
+
+        /* ── Responsive ────────────────────────────────── */
+        @media (max-width: 1100px) {
+          .mp-grid { grid-template-columns: repeat(2, 1fr); gap: 32px 20px; padding: 48px 32px 100px; }
+          .mp-head { padding: 0 32px 48px; }
+        }
+        @media (max-width: 700px) {
+          .mp-head { flex-direction: column; align-items: flex-start; padding: 0 20px 40px; gap: 28px; }
+          .mp-filters { flex-direction: row; flex-wrap: wrap; align-items: flex-start; gap: 6px; }
+          .mp-filters-lbl { display: none; }
+          .mp-f { padding: 5px 12px; }
+          .mp-grid { grid-template-columns: repeat(2, 1fr); gap: 20px 12px; padding: 36px 20px 80px; }
+          .mp-card-img { margin-bottom: 12px; }
+          .mp-card-name { font-size: 18px; margin-bottom: 10px; }
+          .mp-card-add { padding: 8px 10px; font-size: 7px; letter-spacing: 0.18em; }
+          .mp-card-overlay { display: none; }
+        }
+        @media (max-width: 400px) {
+          .mp-grid { grid-template-columns: 1fr; }
         }
       `}</style>
 
-      <div style={{ paddingTop: 148 }}>
+      <div style={{ paddingTop: 140 }}>
 
         {/* ── En-tête ── */}
-        <div className="roi-head">
-          <div className="roi-head-left">
-            <div className="roi-eyebrow">La Collection · Édition courante</div>
-            <h1 className="roi-title">Maroquinerie<br /><em>d'Auteur</em></h1>
-            <p className="roi-manifeste">
-              Chaque pièce naît des mains d'un artisan à Abidjan.<br />
-              Cuir pleine fleur, finitions à la main, numérotée.
-            </p>
+        <div className="mp-head">
+          <div>
+            <div className="mp-eyebrow">La Collection · Édition courante</div>
+            <h1 className="mp-title">Maroquinerie <em>d'Auteur</em></h1>
+            <p className="mp-sub">Chaque pièce naît des mains d'un artisan à Abidjan. Cuir pleine fleur, finitions à la main.</p>
           </div>
           <div>
-            <div className="roi-filters-label">Filtrer par</div>
-            <div className="roi-filters">
+            <div className="mp-filters-lbl">Filtrer</div>
+            <div className="mp-filters">
               {CATEGORIES.map((cat) => (
-                <button
-                  key={cat}
-                  className={`roi-f${filter === cat ? " active" : ""}`}
-                  onClick={() => setFilter(cat)}
-                >
-                  {cat}
-                </button>
+                <button key={cat} className={`mp-f${filter === cat ? " active" : ""}`} onClick={() => setFilter(cat)}>{cat}</button>
               ))}
             </div>
           </div>
         </div>
 
-        {/* ── Produits ── */}
-        {visible.map((p: Product, i) => (
-          <div key={p.ref} className={`roi-item${i % 2 === 1 ? " flip" : ""}`}>
+        {/* ── Grille ── */}
+        <div className="mp-grid">
+          {visible.length === 0 && (
+            <div className="mp-empty">Aucun produit dans cette catégorie.</div>
+          )}
 
-            {/* Image */}
-            <div className="roi-img">
-              <Link href={`/marketplace/${p.slug}`} style={{ position: "absolute", inset: 0, display: "block", zIndex: 1 }} tabIndex={-1} aria-hidden>
+          {visible.map((p: Product) => (
+            <Link key={p.ref} href={`/marketplace/${p.slug}`} className="mp-card">
+
+              {/* Image */}
+              <div className="mp-card-img">
                 <div
-                  className="roi-img-bg"
+                  className="mp-card-img-bg"
                   style={{
                     backgroundImage: p.imageUrl
                       ? `url('${p.imageUrl}')`
@@ -270,67 +236,40 @@ export default function MarketplacePage() {
                     backgroundPosition: p.imagePos,
                   }}
                 />
-              </Link>
-              <div className="roi-img-fade" />
-              <div className="roi-img-stamp">{p.ref} · {p.category}</div>
-            </div>
-
-            {/* Infos */}
-            <div className="roi-info">
-              <div className="roi-num">
-                {String(i + 1).padStart(2, "0")} / {String(visible.length).padStart(2, "0")}
+                <div className="mp-card-overlay">
+                  <span className="mp-card-see">Voir la pièce →</span>
+                </div>
+                {p.stock === 0 && <div className="mp-card-badge">Rupture</div>}
+                <div className="mp-card-ref">{p.ref}</div>
               </div>
 
-              <div className="roi-cat">{p.category}</div>
-              <h2 className="roi-name">{p.name}</h2>
-
-              <p className="roi-desc">
-                {p.description || "Pièce artisanale en cuir pleine fleur, façonnée à Abidjan. Chaque pièce porte l'empreinte unique de la main qui l'a créée."}
-              </p>
-
-              <div className="roi-matiere">Cuir pleine fleur · Fait à Abidjan</div>
+              {/* Infos */}
+              <div className="mp-card-cat">{p.category}</div>
+              <div className="mp-card-name">{p.name}</div>
 
               {p.colors.length > 0 && (
-                <div className="roi-colors">
-                  {p.colors.map((c, ci) => (
-                    <div key={c.name} className="roi-color-wrap">
-                      <div
-                        className="roi-swatch"
-                        title={c.label}
-                        style={{ background: c.hex }}
-                      />
-                      {ci === 0 && <span className="roi-color-label">{p.colors.length} coloris</span>}
-                    </div>
+                <div className="mp-card-swatches">
+                  {p.colors.slice(0, 5).map((c) => (
+                    <div key={c.name} className="mp-swatch" style={{ background: c.hex }} title={c.label} />
                   ))}
+                  {p.colors.length > 5 && <span className="mp-swatch-more">+{p.colors.length - 5}</span>}
                 </div>
               )}
 
-              <div className="roi-hr" />
-
-              <div className="roi-price-row">
-                <div className="roi-price">{fmt(p.price)}</div>
-                {p.stock === 0
-                  ? <div className="roi-stock out">Rupture</div>
-                  : <div className="roi-stock in">{p.stock} en stock</div>
-                }
-              </div>
-
-              <div className="roi-ctas">
+              <div className="mp-card-bottom">
+                <div className="mp-card-price">{fmt(p.price)}</div>
                 <button
-                  className={`roi-btn-add${added[p.ref] ? " added" : ""}`}
+                  className={`mp-card-add${added[p.ref] ? " added" : ""}`}
                   onClick={(e) => handleAdd(e, p.ref)}
                   disabled={p.stock === 0}
                 >
-                  {added[p.ref] ? "Ajouté ✓" : "Ajouter au panier"}
+                  {added[p.ref] ? "Ajouté ✓" : "+ Panier"}
                 </button>
-                <Link href={`/marketplace/${p.slug}`} className="roi-btn-see">
-                  Voir la pièce <span style={{ fontFamily: "var(--serif)", fontStyle: "italic", fontSize: 16 }}>→</span>
-                </Link>
               </div>
-            </div>
 
-          </div>
-        ))}
+            </Link>
+          ))}
+        </div>
 
       </div>
     </>
