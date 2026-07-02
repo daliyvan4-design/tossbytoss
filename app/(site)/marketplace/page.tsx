@@ -197,7 +197,7 @@ export default function MarketplacePage() {
         }
       `}</style>
 
-      <main style={{ paddingTop: 140 }}>
+      <main style={{ paddingTop: 140, position: "relative", zIndex: 2 }}>
 
         {/* ── En-tête ── */}
         <div className="mp-head">

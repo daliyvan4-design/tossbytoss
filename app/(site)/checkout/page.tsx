@@ -47,7 +47,7 @@ export default function CheckoutPage() {
 
   if (!cartLoaded || !productsLoaded) {
     return (
-      <main style={{ padding: "120px 48px", background: "#0a0a0a", minHeight: "100vh" }} />
+      <main style={{ padding: "120px 48px", background: "#0a0a0a", minHeight: "100vh", position: "relative", zIndex: 2 }} />
     );
   }
 

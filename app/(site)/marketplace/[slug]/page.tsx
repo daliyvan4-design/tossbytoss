@@ -44,7 +44,7 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
   const related = products.filter((p) => p.ref !== product.ref).slice(0, 4);
 
   return (
-    <main style={{ minHeight: "100vh" }}>
+    <main style={{ minHeight: "100vh", position: "relative", zIndex: 2 }}>
       <style>{`
         /* ── Layout principal ── */
         .pp-wrap {
