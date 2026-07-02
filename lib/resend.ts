@@ -2,10 +2,10 @@ import { Resend } from "resend";
 
 export const resend = new Resend(process.env.RESEND_API_KEY);
 
-// Quand le domaine Zoho sera vérifié dans Resend, changer RESEND_FROM dans les env Vercel.
-// Ex: "Toss by Toss <contact@tossbytoss.ci>"
+// FROM/REPLY_TO définis via env Vercel une fois le domaine tossbytoss.com vérifié dans Resend.
+// Prod: RESEND_FROM="Toss by Toss <contact@tossbytoss.com>", RESEND_REPLY_TO="contact@tossbytoss.com"
 const FROM = process.env.RESEND_FROM ?? "Toss by Toss <onboarding@resend.dev>";
-const REPLY_TO = process.env.RESEND_REPLY_TO ?? "bobdali127@gmail.com";
+const REPLY_TO = process.env.RESEND_REPLY_TO ?? "contact@tossbytoss.com";
 
 export interface InvoiceItem {
   name: string;
