@@ -78,31 +78,31 @@ export default function MoodboardAdminPage() {
   const conception = items.filter((i) => i.section === "CONCEPTION");
 
   const ROW: React.CSSProperties = { display: "flex", gap: 8, flexDirection: "column" };
-  const LABEL: React.CSSProperties = { fontFamily: "var(--font-jetbrains, monospace)", fontSize: 9, letterSpacing: "0.25em", textTransform: "uppercase", color: "rgba(245,242,236,0.5)" };
-  const INPUT: React.CSSProperties = { background: "#111", border: "1px solid rgba(245,242,236,0.15)", padding: "10px 12px", color: "#f5f2ec", fontFamily: "var(--font-cormorant, Georgia, serif)", fontSize: 16, borderRadius: 0, outline: "none", width: "100%", boxSizing: "border-box" };
-  const SELECT: React.CSSProperties = { ...INPUT, fontFamily: "var(--font-jetbrains, monospace)", fontSize: 11 };
+  const LABEL: React.CSSProperties = { fontFamily: "var(--font-montserrat, sans-serif)", fontSize: 11, letterSpacing: "0.25em", textTransform: "uppercase", color: "rgba(17,17,17,0.5)" };
+  const INPUT: React.CSSProperties = { background: "#111", border: "1px solid rgba(17,17,17,0.15)", padding: "10px 12px", color: "#111111", fontFamily: "var(--font-montserrat, sans-serif)", fontSize: 16, borderRadius: 0, outline: "none", width: "100%", boxSizing: "border-box" };
+  const SELECT: React.CSSProperties = { ...INPUT, fontFamily: "var(--font-montserrat, sans-serif)", fontSize: 11 };
 
   return (
     <>
-      <div style={{ marginBottom: 48, borderBottom: "1px solid rgba(245,242,236,0.10)", paddingBottom: 32 }}>
-        <div style={{ fontFamily: "var(--font-jetbrains, monospace)", fontSize: 10, letterSpacing: "0.3em", textTransform: "uppercase", opacity: 0.45, marginBottom: 10 }}>/ 07 — Galerie</div>
-        <h1 style={{ fontFamily: "var(--font-cormorant, Georgia, serif)", fontStyle: "italic", fontWeight: 300, fontSize: 48, lineHeight: 1 }}>Moodboard</h1>
+      <div style={{ marginBottom: 48, borderBottom: "1px solid rgba(17,17,17,0.10)", paddingBottom: 32 }}>
+        <div style={{ fontFamily: "var(--font-montserrat, sans-serif)", fontSize: 10, letterSpacing: "0.3em", textTransform: "uppercase", opacity: 0.45, marginBottom: 10 }}>/ 07 — Galerie</div>
+        <h1 style={{ fontFamily: "var(--font-montserrat, sans-serif)", fontStyle: "normal", fontWeight: 600, fontSize: 48, lineHeight: 1 }}>Moodboard</h1>
       </div>
 
       <div style={{ display: "grid", gridTemplateColumns: "360px 1fr", gap: 48, alignItems: "start" }}>
 
         {/* Formulaire ajout */}
         <form onSubmit={handleUploadAndCreate} style={{ display: "flex", flexDirection: "column", gap: 20, position: "sticky", top: 32 }}>
-          <div style={{ fontFamily: "var(--font-jetbrains, monospace)", fontSize: 9, letterSpacing: "0.25em", textTransform: "uppercase", opacity: 0.5, marginBottom: 4 }}>Ajouter une photo</div>
+          <div style={{ fontFamily: "var(--font-montserrat, sans-serif)", fontSize: 11, letterSpacing: "0.25em", textTransform: "uppercase", opacity: 0.5, marginBottom: 4 }}>Ajouter une photo</div>
 
           {/* Upload zone */}
           <div
             onClick={() => fileRef.current?.click()}
-            style={{ border: "1px dashed rgba(245,242,236,0.2)", minHeight: 180, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", position: "relative", overflow: "hidden" }}
+            style={{ border: "1px dashed rgba(17,17,17,0.2)", minHeight: 180, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", position: "relative", overflow: "hidden" }}
           >
             {previewUrl
               ? <img src={previewUrl} alt="" style={{ width: "100%", height: 180, objectFit: "cover" }} />
-              : <span style={{ fontFamily: "var(--font-jetbrains, monospace)", fontSize: 9, letterSpacing: "0.22em", textTransform: "uppercase", opacity: 0.35 }}>Cliquer pour choisir</span>
+              : <span style={{ fontFamily: "var(--font-montserrat, sans-serif)", fontSize: 11, letterSpacing: "0.22em", textTransform: "uppercase", opacity: 0.35 }}>Cliquer pour choisir</span>
             }
             <input
               ref={fileRef}
@@ -147,13 +147,13 @@ export default function MoodboardAdminPage() {
           <button
             type="submit"
             disabled={uploading}
-            style={{ padding: "14px 28px", background: uploading ? "rgba(245,242,236,0.1)" : "#f5f2ec", color: "#0a0a0a", fontFamily: "var(--font-jetbrains, monospace)", fontSize: 9, fontWeight: 700, letterSpacing: "0.3em", textTransform: "uppercase", border: "none", cursor: uploading ? "default" : "pointer", opacity: uploading ? 0.5 : 1 }}
+            style={{ padding: "14px 28px", background: uploading ? "rgba(17,17,17,0.1)" : "#111111", color: "#ffffff", fontFamily: "var(--font-montserrat, sans-serif)", fontSize: 11, fontWeight: 700, letterSpacing: "0.3em", textTransform: "uppercase", border: "none", cursor: uploading ? "default" : "pointer", opacity: uploading ? 0.5 : 1 }}
           >
             {uploading ? "Upload…" : "Ajouter à la galerie"}
           </button>
 
           {status && (
-            <div style={{ fontFamily: "var(--font-jetbrains, monospace)", fontSize: 9, letterSpacing: "0.15em", opacity: 0.7 }}>{status}</div>
+            <div style={{ fontFamily: "var(--font-montserrat, sans-serif)", fontSize: 11, letterSpacing: "0.15em", opacity: 0.7 }}>{status}</div>
           )}
         </form>
 
@@ -161,22 +161,22 @@ export default function MoodboardAdminPage() {
         <div style={{ display: "flex", flexDirection: "column", gap: 40 }}>
           {([["CLIENTS", clients], ["CONCEPTION", conception]] as [GallerySection, GalleryItem[]][]).map(([section, sectionItems]) => (
             <div key={section}>
-              <div style={{ fontFamily: "var(--font-jetbrains, monospace)", fontSize: 9, letterSpacing: "0.3em", textTransform: "uppercase", opacity: 0.4, marginBottom: 16 }}>
+              <div style={{ fontFamily: "var(--font-montserrat, sans-serif)", fontSize: 11, letterSpacing: "0.3em", textTransform: "uppercase", opacity: 0.4, marginBottom: 16 }}>
                 {SECTION_LABELS[section]} · {sectionItems.length} photo{sectionItems.length !== 1 ? "s" : ""}
               </div>
               {sectionItems.length === 0 && (
-                <div style={{ fontFamily: "var(--font-cormorant, Georgia, serif)", fontStyle: "italic", opacity: 0.3, fontSize: 17 }}>Aucune photo dans cette section.</div>
+                <div style={{ fontFamily: "var(--font-montserrat, sans-serif)", fontStyle: "normal", opacity: 0.3, fontSize: 17 }}>Aucune photo dans cette section.</div>
               )}
               <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(180px, 1fr))", gap: 12 }}>
                 {sectionItems.map((item) => (
-                  <div key={item.id} style={{ border: "1px solid rgba(245,242,236,0.1)", overflow: "hidden", opacity: item.active ? 1 : 0.35 }}>
+                  <div key={item.id} style={{ border: "1px solid rgba(17,17,17,0.1)", overflow: "hidden", opacity: item.active ? 1 : 0.35 }}>
                     <div style={{ position: "relative", height: item.aspect === "TALL" ? 240 : item.aspect === "WIDE" ? 100 : 160, overflow: "hidden" }}>
                       <img src={item.imageUrl} alt={item.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
                       <div style={{ position: "absolute", top: 6, right: 6, display: "flex", gap: 4 }}>
                         <button
                           onClick={() => handleToggle(item)}
                           title={item.active ? "Masquer" : "Afficher"}
-                          style={{ width: 26, height: 26, border: "1px solid rgba(245,242,236,0.3)", background: "rgba(10,10,10,0.8)", color: "#f5f2ec", fontSize: 12, cursor: "pointer", display: "grid", placeItems: "center" }}
+                          style={{ width: 26, height: 26, border: "1px solid rgba(255,255,255,0.4)", background: "rgba(10,10,10,0.8)", color: "#ffffff", fontSize: 12, cursor: "pointer", display: "grid", placeItems: "center" }}
                         >{item.active ? "●" : "○"}</button>
                         <button
                           onClick={() => handleDelete(item.id)}
@@ -186,8 +186,8 @@ export default function MoodboardAdminPage() {
                       </div>
                     </div>
                     <div style={{ padding: "10px 12px" }}>
-                      <div style={{ fontFamily: "var(--font-cormorant, Georgia, serif)", fontStyle: "italic", fontSize: 14, lineHeight: 1.3, marginBottom: 4 }}>{item.name || "—"}</div>
-                      <div style={{ fontFamily: "var(--font-jetbrains, monospace)", fontSize: 8, letterSpacing: "0.15em", opacity: 0.4, textTransform: "uppercase" }}>{ASPECT_LABELS[item.aspect]} · #{item.position}</div>
+                      <div style={{ fontFamily: "var(--font-montserrat, sans-serif)", fontStyle: "normal", fontSize: 14, lineHeight: 1.3, marginBottom: 4 }}>{item.name || "—"}</div>
+                      <div style={{ fontFamily: "var(--font-montserrat, sans-serif)", fontSize: 10, letterSpacing: "0.15em", opacity: 0.4, textTransform: "uppercase" }}>{ASPECT_LABELS[item.aspect]} · #{item.position}</div>
                     </div>
                   </div>
                 ))}

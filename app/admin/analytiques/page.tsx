@@ -38,46 +38,46 @@ export default async function AnalytiquesPage() {
 
   return (
     <>
-      <div style={{ marginBottom: 48, borderBottom: "1px solid rgba(245,242,236,0.10)", paddingBottom: 32 }}>
-        <div style={{ fontFamily: "var(--font-jetbrains, monospace)", fontSize: 10, letterSpacing: "0.3em", textTransform: "uppercase", opacity: 0.45, marginBottom: 10 }}>/ 04 — Analytiques</div>
-        <h1 style={{ fontFamily: "var(--font-cormorant, Georgia, serif)", fontStyle: "italic", fontWeight: 300, fontSize: 48, lineHeight: 1 }}>Analytiques</h1>
+      <div style={{ marginBottom: 48, borderBottom: "1px solid rgba(17,17,17,0.10)", paddingBottom: 32 }}>
+        <div style={{ fontFamily: "var(--font-montserrat, sans-serif)", fontSize: 10, letterSpacing: "0.3em", textTransform: "uppercase", opacity: 0.45, marginBottom: 10 }}>/ 04 — Analytiques</div>
+        <h1 style={{ fontFamily: "var(--font-montserrat, sans-serif)", fontStyle: "normal", fontWeight: 600, fontSize: 48, lineHeight: 1 }}>Analytiques</h1>
       </div>
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 16, marginBottom: 32 }}>
         {[{ label: "Chiffre d'affaires total", value: fmt(totalRevenue) }, { label: "Commandes payées", value: String(totalOrders) }].map(({ label, value }) => (
-          <div key={label} style={{ border: "1px solid rgba(245,242,236,0.10)", padding: "28px 32px" }}>
-            <div style={{ fontFamily: "var(--font-jetbrains, monospace)", fontSize: 9, letterSpacing: "0.28em", textTransform: "uppercase", opacity: 0.45, marginBottom: 8 }}>{label}</div>
-            <div style={{ fontFamily: "var(--font-cormorant, Georgia, serif)", fontStyle: "italic", fontSize: 36, lineHeight: 1.1 }}>{value}</div>
+          <div key={label} style={{ border: "1px solid rgba(17,17,17,0.10)", padding: "28px 32px" }}>
+            <div style={{ fontFamily: "var(--font-montserrat, sans-serif)", fontSize: 11, letterSpacing: "0.28em", textTransform: "uppercase", opacity: 0.45, marginBottom: 8 }}>{label}</div>
+            <div style={{ fontFamily: "var(--font-montserrat, sans-serif)", fontStyle: "normal", fontSize: 36, lineHeight: 1.1 }}>{value}</div>
           </div>
         ))}
       </div>
 
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 32 }}>
-        <div style={{ border: "1px solid rgba(245,242,236,0.10)", padding: 28 }}>
-          <div style={{ fontFamily: "var(--font-jetbrains, monospace)", fontSize: 9, letterSpacing: "0.25em", textTransform: "uppercase", opacity: 0.45, marginBottom: 24 }}>Revenus — 6 derniers mois</div>
+        <div style={{ border: "1px solid rgba(17,17,17,0.10)", padding: 28 }}>
+          <div style={{ fontFamily: "var(--font-montserrat, sans-serif)", fontSize: 11, letterSpacing: "0.25em", textTransform: "uppercase", opacity: 0.45, marginBottom: 24 }}>Revenus — 6 derniers mois</div>
           <div style={{ display: "flex", alignItems: "flex-end", gap: 12, height: 160 }}>
             {revenueByMonth.map((m) => (
               <div key={m.label} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: 8 }}>
-                <div style={{ width: "100%", background: "rgba(245,242,236,0.15)", height: Math.max(4, (m.amount / maxRevenue) * 140) }} title={fmt(m.amount)} />
-                <div style={{ fontFamily: "var(--font-jetbrains, monospace)", fontSize: 8, letterSpacing: "0.1em", opacity: 0.4, textTransform: "uppercase" }}>{m.label}</div>
+                <div style={{ width: "100%", background: "rgba(17,17,17,0.15)", height: Math.max(4, (m.amount / maxRevenue) * 140) }} title={fmt(m.amount)} />
+                <div style={{ fontFamily: "var(--font-montserrat, sans-serif)", fontSize: 10, letterSpacing: "0.1em", opacity: 0.4, textTransform: "uppercase" }}>{m.label}</div>
               </div>
             ))}
           </div>
         </div>
 
-        <div style={{ border: "1px solid rgba(245,242,236,0.10)", padding: 28 }}>
-          <div style={{ fontFamily: "var(--font-jetbrains, monospace)", fontSize: 9, letterSpacing: "0.25em", textTransform: "uppercase", opacity: 0.45, marginBottom: 20 }}>Meilleures ventes</div>
+        <div style={{ border: "1px solid rgba(17,17,17,0.10)", padding: 28 }}>
+          <div style={{ fontFamily: "var(--font-montserrat, sans-serif)", fontSize: 11, letterSpacing: "0.25em", textTransform: "uppercase", opacity: 0.45, marginBottom: 20 }}>Meilleures ventes</div>
           <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
             {bestSellers.map((b, i) => (
-              <div key={b.ref} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", paddingBottom: 12, borderBottom: "1px solid rgba(245,242,236,0.06)" }}>
+              <div key={b.ref} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", paddingBottom: 12, borderBottom: "1px solid rgba(17,17,17,0.06)" }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-                  <span style={{ fontFamily: "var(--font-jetbrains, monospace)", fontSize: 11, opacity: 0.25, minWidth: 20 }}>0{i + 1}</span>
+                  <span style={{ fontFamily: "var(--font-montserrat, sans-serif)", fontSize: 11, opacity: 0.25, minWidth: 20 }}>0{i + 1}</span>
                   <div>
-                    <div style={{ fontFamily: "var(--font-cormorant, Georgia, serif)", fontStyle: "italic", fontSize: 17 }}>{b.name}</div>
-                    <div style={{ fontFamily: "var(--font-jetbrains, monospace)", fontSize: 8, opacity: 0.35, marginTop: 2, letterSpacing: "0.15em" }}>{b.ref}</div>
+                    <div style={{ fontFamily: "var(--font-montserrat, sans-serif)", fontStyle: "normal", fontSize: 17 }}>{b.name}</div>
+                    <div style={{ fontFamily: "var(--font-montserrat, sans-serif)", fontSize: 10, opacity: 0.35, marginTop: 2, letterSpacing: "0.15em" }}>{b.ref}</div>
                   </div>
                 </div>
-                <div style={{ fontFamily: "var(--font-jetbrains, monospace)", fontSize: 12, opacity: 0.8 }}>{b.qty} vendus</div>
+                <div style={{ fontFamily: "var(--font-montserrat, sans-serif)", fontSize: 12, opacity: 0.8 }}>{b.qty} vendus</div>
               </div>
             ))}
           </div>

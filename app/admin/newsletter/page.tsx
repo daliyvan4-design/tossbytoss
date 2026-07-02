@@ -18,31 +18,31 @@ export default async function NewsletterPage() {
 
   return (
     <>
-      <div style={{ marginBottom: 48, borderBottom: "1px solid rgba(245,242,236,0.10)", paddingBottom: 32 }}>
-        <div style={{ fontFamily: "var(--font-jetbrains, monospace)", fontSize: 10, letterSpacing: "0.3em", textTransform: "uppercase", opacity: 0.45, marginBottom: 10 }}>/ 06 — Newsletter</div>
-        <h1 style={{ fontFamily: "var(--font-cormorant, Georgia, serif)", fontStyle: "italic", fontWeight: 300, fontSize: 48, lineHeight: 1 }}>Newsletter</h1>
+      <div style={{ marginBottom: 48, borderBottom: "1px solid rgba(17,17,17,0.10)", paddingBottom: 32 }}>
+        <div style={{ fontFamily: "var(--font-montserrat, sans-serif)", fontSize: 10, letterSpacing: "0.3em", textTransform: "uppercase", opacity: 0.45, marginBottom: 10 }}>/ 06 — Newsletter</div>
+        <h1 style={{ fontFamily: "var(--font-montserrat, sans-serif)", fontStyle: "normal", fontWeight: 600, fontSize: 48, lineHeight: 1 }}>Newsletter</h1>
       </div>
 
       <div style={{ display: "grid", gridTemplateColumns: "1fr 360px", gap: 40 }}>
         <div>
-          <div style={{ fontFamily: "var(--font-jetbrains, monospace)", fontSize: 9, letterSpacing: "0.25em", textTransform: "uppercase", opacity: 0.45, marginBottom: 16 }}>
+          <div style={{ fontFamily: "var(--font-montserrat, sans-serif)", fontSize: 11, letterSpacing: "0.25em", textTransform: "uppercase", opacity: 0.45, marginBottom: 16 }}>
             {activeCount} abonné{activeCount > 1 ? "s" : ""} actif{activeCount > 1 ? "s" : ""}
           </div>
           <table style={{ width: "100%", borderCollapse: "collapse" }}>
             <thead>
-              <tr style={{ borderBottom: "1px solid rgba(245,242,236,0.08)" }}>
+              <tr style={{ borderBottom: "1px solid rgba(17,17,17,0.08)" }}>
                 {["Email", "Source", "Statut", "Date"].map((h) => (
-                  <th key={h} style={{ padding: "10px 16px", textAlign: "left", fontFamily: "var(--font-jetbrains, monospace)", fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", opacity: 0.4, fontWeight: 400 }}>{h}</th>
+                  <th key={h} style={{ padding: "10px 16px", textAlign: "left", fontFamily: "var(--font-montserrat, sans-serif)", fontSize: 11, letterSpacing: "0.2em", textTransform: "uppercase", opacity: 0.4, fontWeight: 400 }}>{h}</th>
                 ))}
               </tr>
             </thead>
             <tbody>
               {subscribers.map((s) => (
-                <tr key={s.email} style={{ borderBottom: "1px solid rgba(245,242,236,0.06)" }}>
-                  <td style={{ padding: "12px 16px", fontFamily: "var(--font-cormorant, Georgia, serif)", fontStyle: "italic", fontSize: 16 }}>{s.email}</td>
-                  <td style={{ padding: "12px 16px", fontFamily: "var(--font-jetbrains, monospace)", fontSize: 9, letterSpacing: "0.12em", textTransform: "uppercase", opacity: 0.5 }}>{s.source}</td>
-                  <td style={{ padding: "12px 16px", fontFamily: "var(--font-jetbrains, monospace)", fontSize: 9, opacity: s.active ? 0.7 : 0.3 }}>{s.active ? "Actif" : "Désabonné"}</td>
-                  <td style={{ padding: "12px 16px", fontFamily: "var(--font-jetbrains, monospace)", fontSize: 9, opacity: 0.4 }}>{s.createdAt.toLocaleDateString("fr-FR")}</td>
+                <tr key={s.email} style={{ borderBottom: "1px solid rgba(17,17,17,0.06)" }}>
+                  <td style={{ padding: "12px 16px", fontFamily: "var(--font-montserrat, sans-serif)", fontStyle: "normal", fontSize: 16 }}>{s.email}</td>
+                  <td style={{ padding: "12px 16px", fontFamily: "var(--font-montserrat, sans-serif)", fontSize: 11, letterSpacing: "0.12em", textTransform: "uppercase", opacity: 0.5 }}>{s.source}</td>
+                  <td style={{ padding: "12px 16px", fontFamily: "var(--font-montserrat, sans-serif)", fontSize: 11, opacity: s.active ? 0.7 : 0.3 }}>{s.active ? "Actif" : "Désabonné"}</td>
+                  <td style={{ padding: "12px 16px", fontFamily: "var(--font-montserrat, sans-serif)", fontSize: 11, opacity: 0.4 }}>{s.createdAt.toLocaleDateString("fr-FR")}</td>
                 </tr>
               ))}
             </tbody>

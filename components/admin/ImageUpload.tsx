@@ -32,7 +32,7 @@ export function ImageUpload({ value, onChange }: Props) {
         if (f) handleFile(f);
       }}
       style={{
-        border: "1px dashed rgba(245,242,236,0.2)",
+        border: "1px dashed rgba(17,17,17,0.2)",
         padding: 24,
         cursor: "pointer",
         textAlign: "center",
@@ -54,7 +54,7 @@ export function ImageUpload({ value, onChange }: Props) {
         }}
       />
       {uploading && (
-        <span style={{ fontFamily: "var(--font-jetbrains, monospace)", fontSize: 10, opacity: 0.5 }}>
+        <span style={{ fontFamily: "var(--font-montserrat, sans-serif)", fontSize: 10, opacity: 0.5 }}>
           Envoi en cours…
         </span>
       )}
@@ -62,7 +62,7 @@ export function ImageUpload({ value, onChange }: Props) {
         <Image src={value} alt="preview" fill style={{ objectFit: "contain" }} />
       )}
       {!uploading && !value && (
-        <span style={{ fontFamily: "var(--font-jetbrains, monospace)", fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", opacity: 0.4 }}>
+        <span style={{ fontFamily: "var(--font-montserrat, sans-serif)", fontSize: 11, letterSpacing: "0.2em", textTransform: "uppercase", opacity: 0.4 }}>
           Glisser une image ou cliquer
         </span>
       )}

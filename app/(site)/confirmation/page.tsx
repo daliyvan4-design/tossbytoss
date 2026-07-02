@@ -17,9 +17,20 @@ function ConfirmationContent() {
 
   return (
     <main style={{ minHeight: "100vh", display: "grid", placeItems: "center", padding: "120px 24px 80px", position: "relative", zIndex: 2 }}>
-      <div style={{ textAlign: "center", maxWidth: 560 }}>
+      <style>{`
+        .conf-ctas { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+        .conf-ctas a { white-space: nowrap; }
+        @media (max-width: 560px) {
+          .conf-ctas { flex-direction: column; align-items: stretch; }
+          .conf-ctas a { display: block; text-align: center; padding: 16px 20px !important; letter-spacing: 0.2em !important; }
+          .conf-wrap h1 { font-size: clamp(32px, 11vw, 44px) !important; }
+          .conf-wrap p  { font-size: 17px !important; margin-bottom: 40px !important; }
+          .conf-check   { margin-bottom: 28px !important; }
+        }
+      `}</style>
+      <div className="conf-wrap" style={{ textAlign: "center", maxWidth: 560, width: "100%" }}>
 
-        <div style={{
+        <div className="conf-check" style={{
           width: 56,
           height: 56,
           borderRadius: "50%",
@@ -84,7 +95,7 @@ function ConfirmationContent() {
           Nous avons bien reçu votre commande. Notre équipe vous contactera sous 24 h pour confirmer les détails et organiser la livraison.
         </p>
 
-        <div style={{ display: "flex", gap: 16, justifyContent: "center", flexWrap: "wrap" }}>
+        <div className="conf-ctas">
           <Link href="/marketplace" style={{
             padding: "16px 32px",
             background: "var(--fg)",

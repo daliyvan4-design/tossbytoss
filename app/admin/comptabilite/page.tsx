@@ -15,46 +15,46 @@ export default async function ComptabilitePage() {
 
   return (
     <>
-      <div style={{ marginBottom: 48, borderBottom: "1px solid rgba(245,242,236,0.10)", paddingBottom: 32, display: "flex", justifyContent: "space-between", alignItems: "flex-end" }}>
+      <div style={{ marginBottom: 48, borderBottom: "1px solid rgba(17,17,17,0.10)", paddingBottom: 32, display: "flex", justifyContent: "space-between", alignItems: "flex-end" }}>
         <div>
-          <div style={{ fontFamily: "var(--font-jetbrains, monospace)", fontSize: 10, letterSpacing: "0.3em", textTransform: "uppercase", opacity: 0.45, marginBottom: 10 }}>/ 05 — Comptabilité</div>
-          <h1 style={{ fontFamily: "var(--font-cormorant, Georgia, serif)", fontStyle: "italic", fontWeight: 300, fontSize: 48, lineHeight: 1 }}>Comptabilité</h1>
+          <div style={{ fontFamily: "var(--font-montserrat, sans-serif)", fontSize: 10, letterSpacing: "0.3em", textTransform: "uppercase", opacity: 0.45, marginBottom: 10 }}>/ 05 — Comptabilité</div>
+          <h1 style={{ fontFamily: "var(--font-montserrat, sans-serif)", fontStyle: "normal", fontWeight: 600, fontSize: 48, lineHeight: 1 }}>Comptabilité</h1>
         </div>
         <a href="/api/admin/comptabilite/export" download="comptabilite.csv"
-          style={{ padding: "12px 24px", border: "1px solid rgba(245,242,236,0.2)", fontFamily: "var(--font-jetbrains, monospace)", fontSize: 9, letterSpacing: "0.22em", textTransform: "uppercase", textDecoration: "none", opacity: 0.7 }}>
+          style={{ padding: "12px 24px", border: "1px solid rgba(17,17,17,0.2)", fontFamily: "var(--font-montserrat, sans-serif)", fontSize: 11, letterSpacing: "0.22em", textTransform: "uppercase", textDecoration: "none", opacity: 0.7 }}>
           Exporter CSV
         </a>
       </div>
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 16, marginBottom: 40 }}>
         {[{ label: "Total ventes", value: fmt(totalSales) }, { label: "Total remboursements", value: fmt(totalRefunds) }, { label: "Net", value: fmt(totalSales - totalRefunds) }].map(({ label, value }) => (
-          <div key={label} style={{ border: "1px solid rgba(245,242,236,0.10)", padding: "24px 28px" }}>
-            <div style={{ fontFamily: "var(--font-jetbrains, monospace)", fontSize: 9, letterSpacing: "0.25em", textTransform: "uppercase", opacity: 0.45, marginBottom: 8 }}>{label}</div>
-            <div style={{ fontFamily: "var(--font-cormorant, Georgia, serif)", fontStyle: "italic", fontSize: 28 }}>{value}</div>
+          <div key={label} style={{ border: "1px solid rgba(17,17,17,0.10)", padding: "24px 28px" }}>
+            <div style={{ fontFamily: "var(--font-montserrat, sans-serif)", fontSize: 11, letterSpacing: "0.25em", textTransform: "uppercase", opacity: 0.45, marginBottom: 8 }}>{label}</div>
+            <div style={{ fontFamily: "var(--font-montserrat, sans-serif)", fontStyle: "normal", fontSize: 28 }}>{value}</div>
           </div>
         ))}
       </div>
 
       <table style={{ width: "100%", borderCollapse: "collapse" }}>
         <thead>
-          <tr style={{ borderBottom: "1px solid rgba(245,242,236,0.08)" }}>
+          <tr style={{ borderBottom: "1px solid rgba(17,17,17,0.08)" }}>
             {["Réf.", "Type", "Montant", "Client", "Date"].map((h) => (
-              <th key={h} style={{ padding: "12px 20px", textAlign: "left", fontFamily: "var(--font-jetbrains, monospace)", fontSize: 9, letterSpacing: "0.22em", textTransform: "uppercase", opacity: 0.4, fontWeight: 400 }}>{h}</th>
+              <th key={h} style={{ padding: "12px 20px", textAlign: "left", fontFamily: "var(--font-montserrat, sans-serif)", fontSize: 11, letterSpacing: "0.22em", textTransform: "uppercase", opacity: 0.4, fontWeight: 400 }}>{h}</th>
             ))}
           </tr>
         </thead>
         <tbody>
           {entries.map((e) => (
-            <tr key={e.id} style={{ borderBottom: "1px solid rgba(245,242,236,0.06)" }}>
-              <td style={{ padding: "12px 20px", fontFamily: "var(--font-jetbrains, monospace)", fontSize: 10, opacity: 0.6 }}>{e.ref}</td>
+            <tr key={e.id} style={{ borderBottom: "1px solid rgba(17,17,17,0.06)" }}>
+              <td style={{ padding: "12px 20px", fontFamily: "var(--font-montserrat, sans-serif)", fontSize: 10, opacity: 0.6 }}>{e.ref}</td>
               <td style={{ padding: "12px 20px" }}>
-                <span style={{ fontFamily: "var(--font-jetbrains, monospace)", fontSize: 9, letterSpacing: "0.15em", textTransform: "uppercase", color: e.type === "SALE" ? "rgba(100,190,100,0.9)" : "rgba(245,100,100,0.7)" }}>
+                <span style={{ fontFamily: "var(--font-montserrat, sans-serif)", fontSize: 11, letterSpacing: "0.15em", textTransform: "uppercase", color: e.type === "SALE" ? "rgba(29,122,62,0.9)" : "rgba(192,58,43,0.7)" }}>
                   {e.type === "SALE" ? "Vente" : "Remboursement"}
                 </span>
               </td>
-              <td style={{ padding: "12px 20px", fontFamily: "var(--font-jetbrains, monospace)", fontSize: 11 }}>{fmt(e.amount)}</td>
-              <td style={{ padding: "12px 20px", fontFamily: "var(--font-cormorant, Georgia, serif)", fontStyle: "italic", fontSize: 16 }}>{e.order?.customerName ?? "—"}</td>
-              <td style={{ padding: "12px 20px", fontFamily: "var(--font-jetbrains, monospace)", fontSize: 9, opacity: 0.4 }}>{e.createdAt.toLocaleDateString("fr-FR")}</td>
+              <td style={{ padding: "12px 20px", fontFamily: "var(--font-montserrat, sans-serif)", fontSize: 11 }}>{fmt(e.amount)}</td>
+              <td style={{ padding: "12px 20px", fontFamily: "var(--font-montserrat, sans-serif)", fontStyle: "normal", fontSize: 16 }}>{e.order?.customerName ?? "—"}</td>
+              <td style={{ padding: "12px 20px", fontFamily: "var(--font-montserrat, sans-serif)", fontSize: 11, opacity: 0.4 }}>{e.createdAt.toLocaleDateString("fr-FR")}</td>
             </tr>
           ))}
         </tbody>

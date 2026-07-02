@@ -17,9 +17,9 @@ export function LogoutButton() {
       style={{
         background: "transparent",
         border: "none",
-        color: "#f5f2ec",
-        fontFamily: "var(--font-jetbrains, monospace)",
-        fontSize: 9,
+        color: "#111111",
+        fontFamily: "var(--font-montserrat, sans-serif)",
+        fontSize: 11,
         letterSpacing: "0.22em",
         textTransform: "uppercase",
         opacity: 0.35,

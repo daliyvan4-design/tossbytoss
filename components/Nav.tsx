@@ -26,6 +26,7 @@ export function Nav() {
     { href: "/moodboard",   label: "Moodboard" },
     { href: "/about",       label: "À propos" },
     { href: "/contact",     label: "Contact" },
+    { href: "/compte",      label: "Compte" },
   ];
 
   return (

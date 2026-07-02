@@ -14,9 +14,9 @@ const STATUSES = [
 const INPUT = {
   width: "100%",
   background: "transparent",
-  border: "1px solid rgba(245,242,236,0.18)",
+  border: "1px solid rgba(17,17,17,0.18)",
   padding: "10px 14px",
-  fontFamily: "var(--font-jetbrains, monospace)",
+  fontFamily: "var(--font-montserrat, sans-serif)",
   fontSize: 10,
   color: "inherit",
   marginBottom: 14,
@@ -24,8 +24,8 @@ const INPUT = {
 } as const;
 
 const LABEL = {
-  fontFamily: "var(--font-jetbrains, monospace)",
-  fontSize: 9,
+  fontFamily: "var(--font-montserrat, sans-serif)",
+  fontSize: 11,
   letterSpacing: "0.25em",
   textTransform: "uppercase" as const,
   opacity: 0.45,
@@ -65,8 +65,8 @@ export function StatusForm({
   }
 
   return (
-    <div style={{ border: "1px solid rgba(245,242,236,0.10)", padding: 24, display: "flex", flexDirection: "column", gap: 0 }}>
-      <div style={{ fontFamily: "var(--font-jetbrains, monospace)", fontSize: 9, letterSpacing: "0.25em", textTransform: "uppercase", opacity: 0.45, marginBottom: 14 }}>
+    <div style={{ border: "1px solid rgba(17,17,17,0.10)", padding: 24, display: "flex", flexDirection: "column", gap: 0 }}>
+      <div style={{ fontFamily: "var(--font-montserrat, sans-serif)", fontSize: 11, letterSpacing: "0.25em", textTransform: "uppercase", opacity: 0.45, marginBottom: 14 }}>
         Statut & Suivi
       </div>
 
@@ -77,7 +77,7 @@ export function StatusForm({
         style={{ ...INPUT, marginBottom: 20 }}
       >
         {STATUSES.map((s) => (
-          <option key={s.value} value={s.value} style={{ background: "#0a0a0a" }}>
+          <option key={s.value} value={s.value} style={{ background: "#ffffff" }}>
             {s.label}
           </option>
         ))}
@@ -102,10 +102,10 @@ export function StatusForm({
         style={{
           width: "100%",
           padding: "10px",
-          background: saved ? "rgba(80,160,100,0.85)" : "rgba(245,242,236,0.9)",
-          color: "#0a0a0a",
-          fontFamily: "var(--font-jetbrains, monospace)",
-          fontSize: 9,
+          background: saved ? "rgba(80,160,100,0.85)" : "rgba(17,17,17,0.9)",
+          color: "#ffffff",
+          fontFamily: "var(--font-montserrat, sans-serif)",
+          fontSize: 11,
           letterSpacing: "0.2em",
           textTransform: "uppercase",
           border: "none",

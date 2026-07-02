@@ -66,9 +66,9 @@ function isShoe(category: string): boolean {
 // ─── Styles ───────────────────────────────────────────────────────────────
 const INPUT_STYLE = {
   background: "transparent",
-  border: "1px solid rgba(245,242,236,0.18)",
+  border: "1px solid rgba(17,17,17,0.18)",
   padding: "10px 14px",
-  fontFamily: "var(--font-cormorant, Georgia, serif)",
+  fontFamily: "var(--font-montserrat, sans-serif)",
   fontSize: 17,
   color: "inherit",
   outline: "none",
@@ -76,8 +76,8 @@ const INPUT_STYLE = {
 } as const;
 
 const LABEL_STYLE = {
-  fontFamily: "var(--font-jetbrains, monospace)",
-  fontSize: 9,
+  fontFamily: "var(--font-montserrat, sans-serif)",
+  fontSize: 11,
   letterSpacing: "0.25em",
   textTransform: "uppercase" as const,
   opacity: 0.55,
@@ -231,10 +231,10 @@ export function ProductForm({ initial, isEdit }: Props) {
         <select
           value={form.texKey}
           onChange={(e) => setForm((f) => ({ ...f, texKey: e.target.value }))}
-          style={{ ...INPUT_STYLE, fontFamily: "var(--font-jetbrains, monospace)", fontSize: 13 }}
+          style={{ ...INPUT_STYLE, fontFamily: "var(--font-montserrat, sans-serif)", fontSize: 13 }}
         >
           {TEX_OPTIONS.map((t) => (
-            <option key={t} value={t} style={{ background: "#0a0a0a" }}>{t}</option>
+            <option key={t} value={t} style={{ background: "#ffffff" }}>{t}</option>
           ))}
         </select>
       </div>
@@ -256,7 +256,7 @@ export function ProductForm({ initial, isEdit }: Props) {
           value={form.details}
           onChange={(e) => setForm((f) => ({ ...f, details: e.target.value }))}
           rows={4}
-          style={{ ...INPUT_STYLE, resize: "vertical", lineHeight: 1.8, fontFamily: "var(--font-jetbrains, monospace)", fontSize: 13 }}
+          style={{ ...INPUT_STYLE, resize: "vertical", lineHeight: 1.8, fontFamily: "var(--font-montserrat, sans-serif)", fontSize: 13 }}
           placeholder={"Cuir pleine fleur 100% végétal\nFermeture laiton brossé\nDoublure en daim naturel"}
         />
       </div>
@@ -266,7 +266,7 @@ export function ProductForm({ initial, isEdit }: Props) {
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
           <label style={LABEL_STYLE}>Coloris disponibles</label>
           {form.colors.length > 0 && (
-            <span style={{ fontFamily: "var(--font-jetbrains, monospace)", fontSize: 9, opacity: 0.4, letterSpacing: "0.15em" }}>
+            <span style={{ fontFamily: "var(--font-montserrat, sans-serif)", fontSize: 11, opacity: 0.4, letterSpacing: "0.15em" }}>
               {form.colors.length} sélectionné{form.colors.length > 1 ? "s" : ""}
             </span>
           )}
@@ -300,10 +300,10 @@ export function ProductForm({ initial, isEdit }: Props) {
                   borderRadius: "50%",
                   background: entry.hex,
                   border: selected
-                    ? "3px solid #f5f2ec"
-                    : "2px solid rgba(245,242,236,0.15)",
+                    ? "3px solid #111111"
+                    : "2px solid rgba(17,17,17,0.15)",
                   boxShadow: selected
-                    ? "0 0 0 1px rgba(245,242,236,0.5)"
+                    ? "0 0 0 1px rgba(17,17,17,0.5)"
                     : "none",
                   transition: "border 150ms, box-shadow 150ms",
                   position: "relative",
@@ -314,14 +314,14 @@ export function ProductForm({ initial, isEdit }: Props) {
                   {selected && (
                     <span style={{
                       fontSize: 14,
-                      color: entry.hex < "#888" ? "#f5f2ec" : "#0a0a0a",
+                      color: entry.hex < "#888" ? "#111111" : "#ffffff",
                       lineHeight: 1,
                     }}>✓</span>
                   )}
                 </div>
                 {/* Label sous le swatch */}
                 <span style={{
-                  fontFamily: "var(--font-jetbrains, monospace)",
+                  fontFamily: "var(--font-montserrat, sans-serif)",
                   fontSize: 7,
                   letterSpacing: "0.1em",
                   textTransform: "uppercase",
@@ -340,7 +340,7 @@ export function ProductForm({ initial, isEdit }: Props) {
 
         {/* Sélection résumée */}
         {form.colors.length > 0 && (
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 6, padding: "10px 14px", border: "1px solid rgba(245,242,236,0.10)", background: "rgba(245,242,236,0.03)" }}>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 6, padding: "10px 14px", border: "1px solid rgba(17,17,17,0.10)", background: "rgba(17,17,17,0.03)" }}>
             {form.colors.map((c) => (
               <span
                 key={c.name}
@@ -349,9 +349,9 @@ export function ProductForm({ initial, isEdit }: Props) {
                   alignItems: "center",
                   gap: 6,
                   padding: "4px 10px",
-                  border: "1px solid rgba(245,242,236,0.18)",
-                  fontFamily: "var(--font-jetbrains, monospace)",
-                  fontSize: 9,
+                  border: "1px solid rgba(17,17,17,0.18)",
+                  fontFamily: "var(--font-montserrat, sans-serif)",
+                  fontSize: 11,
                   letterSpacing: "0.15em",
                   textTransform: "uppercase",
                 }}
@@ -361,7 +361,7 @@ export function ProductForm({ initial, isEdit }: Props) {
                 <button
                   type="button"
                   onClick={() => toggleColor(c)}
-                  style={{ background: "transparent", border: "none", color: "rgba(245,100,100,0.7)", fontSize: 14, cursor: "pointer", lineHeight: 1, padding: 0, marginLeft: 2 }}
+                  style={{ background: "transparent", border: "none", color: "rgba(192,58,43,0.7)", fontSize: 14, cursor: "pointer", lineHeight: 1, padding: 0, marginLeft: 2 }}
                 >×</button>
               </span>
             ))}
@@ -375,7 +375,7 @@ export function ProductForm({ initial, isEdit }: Props) {
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
             <label style={LABEL_STYLE}>Pointures disponibles (EU)</label>
             {selectedSizes.length > 0 && (
-              <span style={{ fontFamily: "var(--font-jetbrains, monospace)", fontSize: 9, opacity: 0.4, letterSpacing: "0.15em" }}>
+              <span style={{ fontFamily: "var(--font-montserrat, sans-serif)", fontSize: 11, opacity: 0.4, letterSpacing: "0.15em" }}>
                 {selectedSizes.join(", ")}
               </span>
             )}
@@ -390,10 +390,10 @@ export function ProductForm({ initial, isEdit }: Props) {
                   onClick={() => toggleSize(size)}
                   style={{
                     padding: "8px 14px",
-                    background: active ? "rgba(245,242,236,0.12)" : "transparent",
-                    border: active ? "1px solid rgba(245,242,236,0.6)" : "1px solid rgba(245,242,236,0.18)",
-                    color: "#f5f2ec",
-                    fontFamily: "var(--font-jetbrains, monospace)",
+                    background: active ? "rgba(17,17,17,0.12)" : "transparent",
+                    border: active ? "1px solid rgba(17,17,17,0.6)" : "1px solid rgba(17,17,17,0.18)",
+                    color: "#111111",
+                    fontFamily: "var(--font-montserrat, sans-serif)",
                     fontSize: 11,
                     letterSpacing: "0.12em",
                     cursor: "pointer",
@@ -419,7 +419,7 @@ export function ProductForm({ initial, isEdit }: Props) {
       </label>
 
       {error && (
-        <div style={{ fontFamily: "var(--font-jetbrains, monospace)", fontSize: 10, color: "rgba(245,100,100,0.9)" }}>
+        <div style={{ fontFamily: "var(--font-montserrat, sans-serif)", fontSize: 10, color: "rgba(192,58,43,0.9)" }}>
           {error}
         </div>
       )}
@@ -427,7 +427,7 @@ export function ProductForm({ initial, isEdit }: Props) {
       <button
         type="submit"
         disabled={saving}
-        style={{ padding: "14px 28px", background: "rgba(245,242,236,0.9)", color: "#0a0a0a", fontFamily: "var(--font-jetbrains, monospace)", fontSize: 9, letterSpacing: "0.25em", textTransform: "uppercase", border: "none", cursor: "pointer", opacity: saving ? 0.5 : 1, alignSelf: "flex-start" }}
+        style={{ padding: "14px 28px", background: "rgba(17,17,17,0.9)", color: "#ffffff", fontFamily: "var(--font-montserrat, sans-serif)", fontSize: 11, letterSpacing: "0.25em", textTransform: "uppercase", border: "none", cursor: "pointer", opacity: saving ? 0.5 : 1, alignSelf: "flex-start" }}
       >
         {saving ? "Enregistrement…" : isEdit ? "Enregistrer" : "Créer le produit"}
       </button>

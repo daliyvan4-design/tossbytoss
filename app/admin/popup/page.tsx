@@ -25,9 +25,9 @@ const DEFAULTS: PopupData = {
 
 const INPUT = {
   background: "transparent",
-  border: "1px solid rgba(245,242,236,0.18)",
+  border: "1px solid rgba(17,17,17,0.18)",
   padding: "10px 14px",
-  fontFamily: "var(--font-cormorant, Georgia, serif)",
+  fontFamily: "var(--font-montserrat, sans-serif)",
   fontSize: 17,
   color: "inherit",
   outline: "none",
@@ -35,8 +35,8 @@ const INPUT = {
 } as const;
 
 const LBL = {
-  fontFamily: "var(--font-jetbrains, monospace)",
-  fontSize: 9,
+  fontFamily: "var(--font-montserrat, sans-serif)",
+  fontSize: 11,
   letterSpacing: "0.25em",
   textTransform: "uppercase" as const,
   opacity: 0.55,
@@ -70,20 +70,20 @@ export default function PopupAdminPage() {
   }
 
   if (loading) return (
-    <div style={{ fontFamily: "var(--font-jetbrains, monospace)", fontSize: 10, opacity: 0.4, letterSpacing: "0.2em" }}>Chargement…</div>
+    <div style={{ fontFamily: "var(--font-montserrat, sans-serif)", fontSize: 10, opacity: 0.4, letterSpacing: "0.2em" }}>Chargement…</div>
   );
 
   return (
     <>
       {/* En-tête */}
-      <div style={{ marginBottom: 48, borderBottom: "1px solid rgba(245,242,236,0.10)", paddingBottom: 32, display: "flex", justifyContent: "space-between", alignItems: "flex-end" }}>
+      <div style={{ marginBottom: 48, borderBottom: "1px solid rgba(17,17,17,0.10)", paddingBottom: 32, display: "flex", justifyContent: "space-between", alignItems: "flex-end" }}>
         <div>
-          <div style={{ fontFamily: "var(--font-jetbrains, monospace)", fontSize: 10, letterSpacing: "0.3em", textTransform: "uppercase", opacity: 0.45, marginBottom: 10 }}>/ 08 — Popup</div>
-          <h1 style={{ fontFamily: "var(--font-cormorant, Georgia, serif)", fontStyle: "italic", fontWeight: 300, fontSize: 48, lineHeight: 1 }}>Popup d'accueil</h1>
+          <div style={{ fontFamily: "var(--font-montserrat, sans-serif)", fontSize: 10, letterSpacing: "0.3em", textTransform: "uppercase", opacity: 0.45, marginBottom: 10 }}>/ 08 — Popup</div>
+          <h1 style={{ fontFamily: "var(--font-montserrat, sans-serif)", fontStyle: "normal", fontWeight: 600, fontSize: 48, lineHeight: 1 }}>Popup d'accueil</h1>
         </div>
         {/* Toggle actif */}
         <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-          <span style={{ fontFamily: "var(--font-jetbrains, monospace)", fontSize: 9, letterSpacing: "0.22em", textTransform: "uppercase", opacity: form.active ? 1 : 0.45 }}>
+          <span style={{ fontFamily: "var(--font-montserrat, sans-serif)", fontSize: 11, letterSpacing: "0.22em", textTransform: "uppercase", opacity: form.active ? 1 : 0.45 }}>
             {form.active ? "Actif" : "Inactif"}
           </span>
           <button
@@ -92,8 +92,8 @@ export default function PopupAdminPage() {
               width: 56,
               height: 28,
               borderRadius: 999,
-              border: "1px solid rgba(245,242,236,0.35)",
-              background: form.active ? "rgba(100,190,100,0.25)" : "transparent",
+              border: "1px solid rgba(17,17,17,0.35)",
+              background: form.active ? "rgba(29,122,62,0.25)" : "transparent",
               cursor: "pointer",
               position: "relative",
               transition: "background 300ms",
@@ -106,7 +106,7 @@ export default function PopupAdminPage() {
               width: 18,
               height: 18,
               borderRadius: "50%",
-              background: form.active ? "rgba(100,190,100,0.9)" : "rgba(245,242,236,0.35)",
+              background: form.active ? "rgba(29,122,62,0.9)" : "rgba(17,17,17,0.35)",
               transition: "left 300ms, background 300ms",
             }} />
           </button>
@@ -124,7 +124,7 @@ export default function PopupAdminPage() {
 
           <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
             <label style={LBL}>Titre principal</label>
-            <input type="text" value={form.title} onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))} style={{ ...INPUT, fontFamily: "var(--font-cormorant, Georgia, serif)", fontSize: 22 }} placeholder="Nuit de Décembre" />
+            <input type="text" value={form.title} onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))} style={{ ...INPUT, fontFamily: "var(--font-montserrat, sans-serif)", fontSize: 22 }} placeholder="Nuit de Décembre" />
           </div>
 
           <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
@@ -150,7 +150,7 @@ export default function PopupAdminPage() {
             </div>
             <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
               <label style={LBL}>URL bouton</label>
-              <input type="text" value={form.ctaUrl} onChange={(e) => setForm((f) => ({ ...f, ctaUrl: e.target.value }))} style={{ ...INPUT, fontFamily: "var(--font-jetbrains, monospace)", fontSize: 13 }} placeholder="/marketplace" />
+              <input type="text" value={form.ctaUrl} onChange={(e) => setForm((f) => ({ ...f, ctaUrl: e.target.value }))} style={{ ...INPUT, fontFamily: "var(--font-montserrat, sans-serif)", fontSize: 13 }} placeholder="/marketplace" />
             </div>
           </div>
 
@@ -158,21 +158,21 @@ export default function PopupAdminPage() {
             <button
               onClick={() => save({})}
               disabled={saving}
-              style={{ padding: "14px 32px", background: "rgba(245,242,236,0.9)", color: "#0a0a0a", fontFamily: "var(--font-jetbrains, monospace)", fontSize: 9, letterSpacing: "0.25em", textTransform: "uppercase", border: "none", cursor: "pointer", opacity: saving ? 0.5 : 1 }}
+              style={{ padding: "14px 32px", background: "rgba(17,17,17,0.9)", color: "#ffffff", fontFamily: "var(--font-montserrat, sans-serif)", fontSize: 11, letterSpacing: "0.25em", textTransform: "uppercase", border: "none", cursor: "pointer", opacity: saving ? 0.5 : 1 }}
             >
               {saving ? "Enregistrement…" : "Enregistrer"}
             </button>
-            {saved && <span style={{ fontFamily: "var(--font-jetbrains, monospace)", fontSize: 9, letterSpacing: "0.18em", color: "rgba(100,190,100,0.9)" }}>✓ Sauvegardé</span>}
+            {saved && <span style={{ fontFamily: "var(--font-montserrat, sans-serif)", fontSize: 11, letterSpacing: "0.18em", color: "rgba(29,122,62,0.9)" }}>✓ Sauvegardé</span>}
           </div>
         </div>
 
         {/* Aperçu miniature */}
         <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-          <div style={{ fontFamily: "var(--font-jetbrains, monospace)", fontSize: 9, letterSpacing: "0.25em", textTransform: "uppercase", opacity: 0.45 }}>Aperçu</div>
+          <div style={{ fontFamily: "var(--font-montserrat, sans-serif)", fontSize: 11, letterSpacing: "0.25em", textTransform: "uppercase", opacity: 0.45 }}>Aperçu</div>
           <div style={{
-            border: "1px solid rgba(245,242,236,0.15)",
+            border: "1px solid rgba(17,17,17,0.15)",
             overflow: "hidden",
-            background: "#0a0a0a",
+            background: "#ffffff",
             aspectRatio: "9/16",
             maxHeight: 480,
             position: "relative",
@@ -183,29 +183,29 @@ export default function PopupAdminPage() {
               <div style={{ flex: 1, backgroundImage: `url('${form.imageUrl}')`, backgroundSize: "cover", backgroundPosition: "center" }} />
             )}
             {!form.imageUrl && (
-              <div style={{ flex: 1, background: "rgba(245,242,236,0.05)", display: "grid", placeItems: "center" }}>
-                <span style={{ fontFamily: "var(--font-jetbrains, monospace)", fontSize: 9, opacity: 0.2, letterSpacing: "0.2em" }}>IMAGE</span>
+              <div style={{ flex: 1, background: "rgba(17,17,17,0.05)", display: "grid", placeItems: "center" }}>
+                <span style={{ fontFamily: "var(--font-montserrat, sans-serif)", fontSize: 11, opacity: 0.2, letterSpacing: "0.2em" }}>IMAGE</span>
               </div>
             )}
-            <div style={{ padding: "20px 18px", background: "#0a0a0a", display: "flex", flexDirection: "column", gap: 8 }}>
+            <div style={{ padding: "20px 18px", background: "#ffffff", display: "flex", flexDirection: "column", gap: 8 }}>
               {form.badge && (
-                <span style={{ fontFamily: "var(--font-jetbrains, monospace)", fontSize: 8, letterSpacing: "0.28em", textTransform: "uppercase", opacity: 0.6 }}>{form.badge}</span>
+                <span style={{ fontFamily: "var(--font-montserrat, sans-serif)", fontSize: 10, letterSpacing: "0.28em", textTransform: "uppercase", opacity: 0.6 }}>{form.badge}</span>
               )}
               {form.title && (
-                <div style={{ fontFamily: "var(--font-cormorant, Georgia, serif)", fontStyle: "italic", fontSize: 22, lineHeight: 1.05, color: "#f5f2ec" }}>{form.title}</div>
+                <div style={{ fontFamily: "var(--font-montserrat, sans-serif)", fontStyle: "normal", fontSize: 22, lineHeight: 1.05, color: "#111111" }}>{form.title}</div>
               )}
               {form.subtitle && (
-                <div style={{ fontFamily: "var(--font-sans, sans-serif)", fontSize: 10, fontWeight: 300, opacity: 0.7, lineHeight: 1.5 }}>{form.subtitle}</div>
+                <div style={{ fontFamily: "var(--font-sans, sans-serif)", fontSize: 10, fontWeight: 600, opacity: 0.7, lineHeight: 1.5 }}>{form.subtitle}</div>
               )}
               {form.ctaLabel && (
-                <div style={{ marginTop: 4, padding: "8px 14px", background: "rgba(245,242,236,0.9)", color: "#0a0a0a", fontFamily: "var(--font-jetbrains, monospace)", fontSize: 8, letterSpacing: "0.22em", textTransform: "uppercase", display: "inline-block", alignSelf: "flex-start" }}>
+                <div style={{ marginTop: 4, padding: "8px 14px", background: "rgba(17,17,17,0.9)", color: "#ffffff", fontFamily: "var(--font-montserrat, sans-serif)", fontSize: 10, letterSpacing: "0.22em", textTransform: "uppercase", display: "inline-block", alignSelf: "flex-start" }}>
                   {form.ctaLabel}
                 </div>
               )}
             </div>
           </div>
           {!form.active && (
-            <div style={{ fontFamily: "var(--font-jetbrains, monospace)", fontSize: 9, opacity: 0.4, letterSpacing: "0.15em", textAlign: "center" }}>
+            <div style={{ fontFamily: "var(--font-montserrat, sans-serif)", fontSize: 11, opacity: 0.4, letterSpacing: "0.15em", textAlign: "center" }}>
               Activez le toggle pour afficher sur le site
             </div>
           )}
