@@ -189,11 +189,13 @@ export async function sendStatusUpdate({
   customerEmail,
   orderRef,
   status,
+  trackingNumber,
 }: {
   customerName: string;
   customerEmail: string;
   orderRef: string;
   status: "SHIPPED" | "DELIVERED";
+  trackingNumber?: string;
 }) {
   const firstName = customerName.split(" ")[0];
   const isShipped = status === "SHIPPED";
@@ -206,6 +208,17 @@ export async function sendStatusUpdate({
   const body = isShipped
     ? "Votre commande a été expédiée. Elle vous parviendra dans les prochains jours. En cas de question, répondez à cet email."
     : "Votre commande vous a été remise. Nous espérons qu'elle vous enchante. N'hésitez pas à nous partager vos impressions.";
+
+  const trackingBlock = isShipped && trackingNumber
+    ? `<tr><td style="padding:0 52px 32px;">
+        <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background:rgba(245,242,236,0.04);border:1px solid rgba(245,242,236,0.10);">
+          <tr><td style="padding:18px 24px;">
+            <p style="margin:0 0 6px;font-family:'Courier New',monospace;font-size:8px;letter-spacing:0.32em;text-transform:uppercase;color:rgba(245,242,236,0.35);">Numéro de suivi</p>
+            <p style="margin:0;font-family:'Courier New',monospace;font-size:14px;letter-spacing:0.12em;color:#f5f2ec;">${trackingNumber}</p>
+          </td></tr>
+        </table>
+      </td></tr>`
+    : "";
 
   const html = `<!DOCTYPE html>
 <html lang="fr">
@@ -226,6 +239,7 @@ export async function sendStatusUpdate({
           <p style="margin:22px 0 0;font-family:'Helvetica Neue',sans-serif;font-weight:300;font-size:15px;line-height:1.7;color:rgba(245,242,236,0.75);">${body}</p>
         </td>
       </tr>
+      ${trackingBlock}
       <tr>
         <td style="padding:0 52px 44px;">
           <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-top:1px solid rgba(245,242,236,0.12);border-bottom:1px solid rgba(245,242,236,0.12);">

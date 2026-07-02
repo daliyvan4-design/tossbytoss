@@ -16,11 +16,11 @@ export async function GET(_: NextRequest, { params }: { params: Promise<{ ref: s
 
 export async function PATCH(req: NextRequest, { params }: { params: Promise<{ ref: string }> }) {
   const { ref } = await params;
-  const { status } = await req.json();
+  const { status, trackingNumber } = await req.json();
 
   const order = await db.order.update({
     where: { ref },
-    data: { status },
+    data: { status, ...(trackingNumber !== undefined && { trackingNumber }) },
   });
 
   if (status === "SHIPPED" || status === "DELIVERED") {
@@ -29,6 +29,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ re
       customerEmail: order.customerEmail,
       orderRef: order.ref,
       status,
+      trackingNumber: order.trackingNumber ?? undefined,
     }).catch(console.error);
   }
 

@@ -51,7 +51,7 @@ export default async function CommandeDetailPage({ params }: { params: Promise<{
             <div style={{ fontFamily: "var(--font-jetbrains, monospace)", fontSize: 10, opacity: 0.5, marginTop: 6 }}>{order.customerEmail}</div>
             {order.customerPhone && <div style={{ fontFamily: "var(--font-jetbrains, monospace)", fontSize: 10, opacity: 0.5, marginTop: 4 }}>{order.customerPhone}</div>}
           </div>
-          <StatusForm orderRef={order.ref} currentStatus={order.status} />
+          <StatusForm orderRef={order.ref} currentStatus={order.status} currentTracking={(order as any).trackingNumber} />
         </div>
       </div>
     </>

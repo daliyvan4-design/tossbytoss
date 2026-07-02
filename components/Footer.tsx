@@ -16,8 +16,8 @@ export function Footer() {
           <Link href="/moodboard">Moodboard</Link>
           <Link href="/about">À propos</Link>
           <Link href="/contact">Contact</Link>
-          <Link href="/marketplace">Boutique</Link>
-          <Link href="/contact">Sur mesure</Link>
+          <Link href="/cgv">CGV</Link>
+          <Link href="/politique-retours">Retours</Link>
         </div>
         <div className="footer-socials">
           <a href="#"><span className="handle">@tossbytoss</span><span>Instagram</span></a>

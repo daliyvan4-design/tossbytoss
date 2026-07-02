@@ -34,7 +34,8 @@ model Order {
   ref           String          @unique
   status        OrderStatus     @default(PENDING)
   total         Int
-  paymentRef    String?
+  paymentRef      String?
+  trackingNumber  String?
   customerName  String
   customerEmail String
   customerPhone String?
