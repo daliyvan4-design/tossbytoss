@@ -88,6 +88,47 @@ const TEX_OPTIONS = [
   "leather-navy","leather-burgundy","leather-natural",
 ];
 
+// ─── Catégories produit ───────────────────────────────────────────────────
+const CATEGORY_OPTIONS = [
+  "Sac à main",
+  "Sac à dos",
+  "Pochette",
+  "Portefeuille",
+  "Porte-cartes",
+  "Ceinture",
+  "Maroquinerie",
+  "Soulier",
+  "Chaussure",
+  "Botte",
+  "Mocassin",
+  "Sandale",
+  "Bracelet",
+  "Accessoire",
+];
+
+// ─── Position de l'image (CSS background-position) ────────────────────────
+const POSITION_OPTIONS: { value: string; label: string }[] = [
+  { value: "center",        label: "Centré" },
+  { value: "top",           label: "Haut" },
+  { value: "bottom",        label: "Bas" },
+  { value: "left",          label: "Gauche" },
+  { value: "right",         label: "Droite" },
+  { value: "center top",    label: "Haut centré" },
+  { value: "center bottom", label: "Bas centré" },
+];
+
+const SELECT_STYLE = {
+  background: "#ffffff",
+  border: "1px solid rgba(17,17,17,0.18)",
+  padding: "12px 14px",
+  fontFamily: "var(--font-montserrat, sans-serif)",
+  fontSize: 15,
+  color: "#111111",
+  outline: "none",
+  width: "100%",
+  cursor: "pointer",
+} as const;
+
 function parseColors(raw: string | undefined): ColorEntry[] {
   try { return JSON.parse(raw ?? "[]") as ColorEntry[]; } catch { return []; }
 }
@@ -212,7 +253,24 @@ export function ProductForm({ initial, isEdit }: Props) {
       {field("name", "Nom du produit")}
       {field("ref", "Référence (SKU) — ex: TBT-001")}
       {field("slug", "Slug URL (auto-généré si vide)")}
-      {field("category", "Catégorie — ex: Sac, Ceinture, Soulier, Chaussure…")}
+      <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+        <label style={LABEL_STYLE}>Catégorie</label>
+        <select
+          value={form.category}
+          onChange={(e) => setForm((f) => ({ ...f, category: e.target.value }))}
+          style={SELECT_STYLE}
+          required
+        >
+          <option value="" disabled style={{ color: "#888" }}>— Choisir une catégorie —</option>
+          {/* Catégorie existante hors liste (édition d'anciens produits) */}
+          {form.category && !CATEGORY_OPTIONS.includes(form.category) && (
+            <option value={form.category}>{form.category}</option>
+          )}
+          {CATEGORY_OPTIONS.map((c) => (
+            <option key={c} value={c}>{c}</option>
+          ))}
+        </select>
+      </div>
       {field("price", "Prix (XOF)", "number")}
       {field("stock", "Stock", "number")}
 
@@ -224,7 +282,21 @@ export function ProductForm({ initial, isEdit }: Props) {
         />
       </div>
 
-      {field("imagePos", "Position image (center, top, bottom, 50% 30%…)")}
+      <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+        <label style={LABEL_STYLE}>Position de l&apos;image</label>
+        <select
+          value={form.imagePos}
+          onChange={(e) => setForm((f) => ({ ...f, imagePos: e.target.value }))}
+          style={SELECT_STYLE}
+        >
+          {form.imagePos && !POSITION_OPTIONS.some((p) => p.value === form.imagePos) && (
+            <option value={form.imagePos}>{form.imagePos}</option>
+          )}
+          {POSITION_OPTIONS.map((p) => (
+            <option key={p.value} value={p.value}>{p.label}</option>
+          ))}
+        </select>
+      </div>
 
       <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
         <label style={LABEL_STYLE}>Texture cuir (texKey)</label>
