@@ -53,9 +53,9 @@ html[data-mode="night"] .tex.night { opacity: 1; }
   position: fixed; inset: 0; z-index: 1;
   pointer-events: none;
   transition: background-color 800ms ease;
-  background: rgba(90, 80, 68, 0.28);
+  background: rgba(90, 80, 68, 0.52);
 }
-html[data-mode="night"] .tint { background: rgba(0, 0, 0, 0.46); }
+html[data-mode="night"] .tint { background: rgba(0, 0, 0, 0.65); }
 
 .vignette {
   position: fixed; inset: 0; z-index: 1;
