@@ -2,6 +2,14 @@ import { NextResponse } from "next/server";
 import { getCachedProducts, setCachedProducts } from "@/lib/cache";
 import type { Product, ProductColor } from "@/lib/products";
 
+function parseArr<T>(val: unknown): T[] {
+  if (Array.isArray(val)) return val as T[];
+  if (typeof val === "string") {
+    try { const p = JSON.parse(val); return Array.isArray(p) ? p : []; } catch { return []; }
+  }
+  return [];
+}
+
 export async function GET() {
   const cached = await getCachedProducts().catch(() => null);
   if (cached) return NextResponse.json(cached);
@@ -25,9 +33,9 @@ export async function GET() {
     imagePos: p.imagePos,
     texKey: p.texKey,
     description: p.description,
-    details: (p.details as unknown as string[]) ?? [],
-    colors: (p.colors as unknown as ProductColor[]) ?? [],
-    sizes: (p.sizes as unknown as string[]) ?? [],
+    details: parseArr<string>(p.details),
+    colors: parseArr<ProductColor>(p.colors),
+    sizes: parseArr<string>(p.sizes),
   }));
 
   await setCachedProducts(products).catch(() => null);
