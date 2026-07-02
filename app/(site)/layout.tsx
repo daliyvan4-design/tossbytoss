@@ -8,7 +8,6 @@ export default function SiteLayout({ children }: { children: React.ReactNode }) 
     <CartProvider>
       <div className="tex day" />
       <div className="tex night" />
-      <div className="tint" />
       <div className="vignette" />
       <Nav />
       <CartDrawer />

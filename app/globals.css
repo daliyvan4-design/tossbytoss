@@ -28,7 +28,7 @@ html[data-mode="night"] {
 * { box-sizing: border-box; margin: 0; padding: 0; }
 html { background: var(--ink); }
 body {
-  background: transparent;
+  background: var(--bg);
   color: var(--fg);
   font-family: var(--sans);
   font-weight: 500;
@@ -39,26 +39,20 @@ body {
   text-rendering: optimizeLegibility;
 }
 
-/* Textures */
+/* Textures — faible opacité, le fond body donne la teinte */
 .tex {
   position: fixed; inset: 0;
   background-size: cover; background-position: center; background-repeat: no-repeat;
   z-index: 0; transition: opacity 800ms ease; will-change: opacity;
+  pointer-events: none;
 }
-.tex.day  { background-image: var(--tex-day);  opacity: 1; }
+.tex.day  { background-image: var(--tex-day);  opacity: 0.18; }
 .tex.night{ background-image: var(--tex-night); opacity: 0; }
 html[data-mode="night"] .tex.day   { opacity: 0; }
-html[data-mode="night"] .tex.night { opacity: 1; }
-.tint {
-  position: fixed; inset: 0; z-index: 1;
-  pointer-events: none;
-  transition: background-color 800ms ease;
-  background: rgba(245, 242, 236, 0.82);
-}
-html[data-mode="night"] .tint { background: rgba(10, 10, 10, 0.84); }
+html[data-mode="night"] .tex.night { opacity: 0.20; }
 
 .vignette {
-  position: fixed; inset: 0; z-index: 1;
+  position: fixed; inset: 0; z-index: 0;
   background: radial-gradient(ellipse at center, transparent 50%, rgba(0,0,0,0.55) 100%);
   pointer-events: none; transition: opacity 800ms ease;
 }
