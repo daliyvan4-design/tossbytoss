@@ -2,6 +2,21 @@
 
 import { useState } from "react";
 
+const BOUTIQUES = [
+  {
+    name: "Angré",
+    area: "Angré 8e Tranche",
+    lines: ["Angré 8e Tranche, Star 11", "Face au Collège Sainte Camille", "Abidjan, Côte d'Ivoire"],
+    query: "Collège Sainte Camille, Angré 8e Tranche, Abidjan",
+  },
+  {
+    name: "Biétry",
+    area: "Biétry · Marcory",
+    lines: ["Boulevard de Marseille, Biétry", "Non loin du Rooftop", "Abidjan, Côte d'Ivoire"],
+    query: "Boulevard de Marseille, Biétry, Abidjan",
+  },
+];
+
 export default function ContactPage() {
   const [email, setEmail] = useState("");
   const [newsStatus, setNewsStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
@@ -126,6 +141,47 @@ export default function ContactPage() {
         </div>
       </section>
 
+      {/* Section boutiques / carte */}
+      <section id="boutiques" style={{ borderTop: "1px solid var(--hairline)", paddingTop: 120, paddingBottom: 120 }}>
+        <div className="section-head">
+          <div className="num-large">/ 06 — Nous trouver</div>
+          <h2>Nos <em>Boutiques</em></h2>
+          <div className="right">Abidjan · Côte d'Ivoire</div>
+        </div>
+
+        <div className="boutiques-grid">
+          {BOUTIQUES.map((b) => (
+            <div key={b.name} className="boutique-card">
+              <div className="map-frame">
+                <iframe
+                  title={`Carte — ${b.name}`}
+                  src={`https://www.google.com/maps?q=${encodeURIComponent(b.query)}&z=15&output=embed`}
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  allowFullScreen
+                />
+                <div className="map-badge">{b.area}</div>
+              </div>
+              <div className="boutique-info">
+                <div className="boutique-name">{b.name}</div>
+                {b.lines.map((l) => (
+                  <div key={l} className="boutique-line">{l}</div>
+                ))}
+                <a
+                  className="itineraire-btn"
+                  href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(b.query)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <span>Itinéraire</span>
+                  <span aria-hidden="true">→</span>
+                </a>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
       {/* Section newsletter */}
       <section id="newsletter" style={{ borderTop: "1px solid var(--hairline)", paddingTop: 80, paddingBottom: 120 }}>
         <div className="newsletter">
@@ -160,8 +216,56 @@ export default function ContactPage() {
       </section>
 
       <style>{`
+        /* ── Boutiques / carte ── */
+        .boutiques-grid {
+          max-width: 1200px; margin: 0 auto; padding: 64px 80px 0;
+          display: grid; grid-template-columns: 1fr 1fr; gap: 56px;
+        }
+        .boutique-card { display: flex; flex-direction: column; }
+        .map-frame {
+          position: relative; aspect-ratio: 4 / 3;
+          border: 1px solid var(--hairline); overflow: hidden;
+          background: color-mix(in oklab, var(--fg) 8%, transparent);
+        }
+        .map-frame iframe {
+          width: 100%; height: 100%; border: 0; display: block;
+          filter: grayscale(1) contrast(1.04);
+          transition: filter 500ms ease;
+        }
+        .map-frame:hover iframe { filter: grayscale(0) contrast(1); }
+        html[data-mode="night"] .map-frame iframe {
+          filter: grayscale(1) invert(0.92) hue-rotate(180deg) contrast(0.9);
+        }
+        html[data-mode="night"] .map-frame:hover iframe {
+          filter: invert(0.92) hue-rotate(180deg);
+        }
+        .map-badge {
+          position: absolute; top: 14px; left: 14px; z-index: 2;
+          background: var(--panel); color: var(--panel-fg);
+          font-family: var(--mono); font-size: 9px; letter-spacing: 0.24em;
+          text-transform: uppercase; padding: 7px 14px; pointer-events: none;
+        }
+        .boutique-info { padding-top: 26px; }
+        .boutique-name {
+          font-family: var(--serif); font-style: italic; font-weight: 300;
+          font-size: 30px; line-height: 1; margin-bottom: 16px;
+        }
+        .boutique-line {
+          font-family: var(--serif); font-size: 17px; line-height: 1.7; opacity: 0.7;
+        }
+        .itineraire-btn {
+          display: inline-flex; align-items: center; gap: 14px; margin-top: 22px;
+          padding: 14px 30px; border: 1px solid var(--fg);
+          background: var(--fg); color: var(--bg);
+          font-family: var(--mono); font-size: 10px; letter-spacing: 0.26em;
+          text-transform: uppercase; text-decoration: none;
+          transition: opacity 250ms ease;
+        }
+        .itineraire-btn:hover { opacity: 0.78; }
+
         @media (max-width: 900px) {
           #contact > div:last-child { grid-template-columns: 1fr !important; padding: 48px 32px 0 !important; gap: 48px !important; }
+          .boutiques-grid { grid-template-columns: 1fr !important; padding: 48px 24px 0 !important; gap: 44px !important; }
         }
       `}</style>
     </>
