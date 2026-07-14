@@ -1,13 +1,30 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 
-export async function GET() {
+export async function GET(req: NextRequest) {
+  const format = new URL(req.url).searchParams.get("format");
+
   const entries = await db.accountingEntry.findMany({
     orderBy: { createdAt: "desc" },
     include: {
       order: { select: { customerName: true, customerEmail: true, ref: true } },
     },
   });
+
+  // Format JSON — consommé par l'export PDF côté client
+  if (format === "json") {
+    return NextResponse.json(
+      entries.map((e) => ({
+        ref: e.ref,
+        type: e.type,
+        amount: e.amount,
+        orderRef: e.order?.ref ?? "",
+        customerName: e.order?.customerName ?? "",
+        customerEmail: e.order?.customerEmail ?? "",
+        date: e.createdAt.toISOString().split("T")[0],
+      }))
+    );
+  }
 
   const header = "Référence,Type,Montant (XOF),Commande,Client,Email,Date\n";
   const rows = entries

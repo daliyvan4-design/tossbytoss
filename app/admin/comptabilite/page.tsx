@@ -1,4 +1,5 @@
 import { isDbConfigured, mockAccountingEntries } from "@/lib/mock-data";
+import { ComptaExport } from "@/components/admin/ComptaExport";
 
 function fmt(n: number) { return n.toLocaleString("fr-FR") + " XOF"; }
 
@@ -20,10 +21,7 @@ export default async function ComptabilitePage() {
           <div style={{ fontFamily: "var(--font-montserrat, sans-serif)", fontSize: 10, letterSpacing: "0.3em", textTransform: "uppercase", opacity: 0.45, marginBottom: 10 }}>/ 05 — Comptabilité</div>
           <h1 style={{ fontFamily: "var(--font-montserrat, sans-serif)", fontStyle: "normal", fontWeight: 600, fontSize: 48, lineHeight: 1 }}>Comptabilité</h1>
         </div>
-        <a href="/api/admin/comptabilite/export" download="comptabilite.csv"
-          style={{ padding: "12px 24px", border: "1px solid rgba(17,17,17,0.2)", fontFamily: "var(--font-montserrat, sans-serif)", fontSize: 11, letterSpacing: "0.22em", textTransform: "uppercase", textDecoration: "none", opacity: 0.7 }}>
-          Exporter CSV
-        </a>
+        <ComptaExport />
       </div>
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 16, marginBottom: 40 }}>
